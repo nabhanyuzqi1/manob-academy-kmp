@@ -1,3 +1,4 @@
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,6 +9,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    id("kotlin-parcelize")
+
 }
 
 kotlin {
@@ -26,18 +29,18 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.ui.tooling.preview)
+            implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.ui.tooling.preview.android)
+
 
         }
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3) // Directly reference Material 3
             implementation(compose.ui)
             implementation(libs.ui.tooling.preview.desktop)
             implementation(compose.components.resources)
-            implementation(libs.androidx.lifecycle.viewmodel)
-           // implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.1.1"))
             implementation(libs.supabase.postgrest.kt)
             implementation(libs.supabase.auth.kt)
@@ -45,6 +48,14 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.supabase.storage.kt)
 
+            // decompose
+            implementation(libs.decompose)
+            implementation(libs.decompose.extensions.compose)
+
+            // mvikotlin
+            implementation(libs.mvikotlin)
+            implementation(libs.mvikotlin.extensions.coroutines)
+            implementation(libs.napier)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -56,7 +67,7 @@ kotlin {
 
 android {
     namespace = "com.mnb.manobacademy"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdkVersion(libs.versions.android.compileSdk.get().toInt())
 
     defaultConfig {
         applicationId = "com.mnb.manobacademy"
@@ -82,7 +93,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.ui.tooling.preview.android)
     debugImplementation(compose.uiTooling)
 }
 
