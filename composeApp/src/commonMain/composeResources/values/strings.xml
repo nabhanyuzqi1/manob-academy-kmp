@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    !!-- LoginScreen Strings --!!
+    <string name="app_name">Manob Academy</string> <string name="login_header_title">Manob Academy</string>
+    <string name="login_header_subtitle">Masuk ke Akun Anda</string>
+    <string name="login_email_label">Alamat Email</string>
+    <string name="login_email_icon_desc">Ikon Email</string>
+    <string name="login_password_label">Kata Sandi</string>
+    <string name="login_password_icon_desc">Ikon Kunci</string>
+    <string name="login_forgot_password">Lupa Kata Sandi?</string>
+    <string name="login_button_signin">Masuk</string>
+    <string name="login_divider_text">Atau masuk dengan</string>
+    <string name="login_social_google_desc">Masuk/Daftar dengan Google</string>
+    <string name="login_social_facebook_desc">Masuk/Daftar dengan Facebook</string>
+    <string name="login_signup_prompt">Belum punya akun? </string>
+    <string name="login_signup_link">Daftar di sini</string>
+    <string name="logo_content_description">Logo Manob Academy</string>
+
+    !!-- RegistrationScreen Strings --!!
+    <string name="register_greeting">Hai,</string>
+    <string name="register_title">Buat Akun</string>
+    <string name="register_fullname_label">Nama Lengkap</string>
+    <string name="register_fullname_icon_desc">Ikon Nama Lengkap</string>
+    <string name="register_phone_label">Nomor Telepon</string>
+    <string name="register_phone_icon_desc">Ikon Telepon</string>
+    <string name="register_email_label">Alamat Email</string> <string name="register_email_icon_desc">Ikon Email</string>
+    <string name="register_password_label">Kata Sandi</string> <string name="register_password_icon_desc">Ikon Kunci</string> <string name="register_terms_prompt">Dengan melanjutkan, Anda menerima Kebijakan Privasi dan Ketentuan Penggunaan kami</string>
+    <string name="register_button_register">Daftar</string>
+    <string name="register_divider_text">Atau daftar dengan</string>
+    <string name="register_login_prompt">Sudah punya akun? </string>
+    <string name="register_login_link">Masuk</string>
+
+
+    !!-- VerificationCodeScreen Strings --!!
+    <string name="otp_screen_title">Verifikasi OTP</string>
+    <string name="otp_prompt">Masukkan kode verifikasi yang baru saja kami kirimkan ke alamat email Anda.</string>
+    <string name="otp_verify_button">Verifikasi</string>
+    <string name="otp_didnt_receive">Tidak menerima kode? </string>
+    <string name="otp_resend_link">Kirim Ulang</string>
+    <string name="otp_field_content_description">Input digit ke-{index} kode OTP</string>
+    <string name="otp_back_button_desc">Kembali</string>
+
+
+    !!-- ForgotPasswordScreen Strings --!!
+    <string name="forgot_password_screen_title">Lupa Kata Sandi</string>
+    <string name="forgot_password_prompt">Pilih detail kontak mana yang harus kami gunakan untuk mengatur ulang kata sandi Anda</string>
+    <string name="forgot_password_option_sms_title">via SMS:</string>
+    <string name="forgot_password_option_email_title">via Email:</string>
+    <string name="forgot_password_reset_button">Atur Ulang</string>
+    <string name="forgot_password_back_button_desc">Kembali</string>
+    <string name="forgot_password_sms_icon_desc">Ikon SMS</string>
+    <string name="forgot_password_email_icon_desc">Ikon Email</string>
+    <string name="forgot_password_illustration_desc">Ilustrasi Lupa Kata Sandi</string>
+
+    !!-- GuideScreen Strings --!!
+    <string name="guide_headline">Tingkatkan Pembelajaran Online Anda</string>
+    <string name="guide_subtitle">Manob Academy</string>
+    <string name="guide_button_start">Mulai</string>
+    <string name="guide_background_desc">Gambar latar belakang panduan</string>
+</resources>

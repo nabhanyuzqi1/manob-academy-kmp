@@ -2,11 +2,11 @@
 package com.mnb.manobacademy
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mnb.manobacademy.navigation.RootComponent
 import com.mnb.manobacademy.navigation.RootContent
+import com.mnb.manobacademy.ui.theme.AppTheme
 
 // Inisialisasi Napier jika masih digunakan
 // import io.github.aakira.napier.DebugAntilog
@@ -14,7 +14,7 @@ import com.mnb.manobacademy.navigation.RootContent
 
 @Composable
 fun App(root: RootComponent) {
-    MaterialTheme {
+    AppTheme(darkTheme = true) {
         RootContent(component = root, modifier = Modifier.fillMaxSize())
     }
 }

@@ -9,3 +9,4 @@ actual fun shouldShowSplash(root: RootComponent, onNavigateToLogin: () -> Unit):
         onNavigateToLogin()
     }
 }
+

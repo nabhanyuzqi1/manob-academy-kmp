@@ -7,81 +7,140 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.DefaultComponentContext // Import DefaultComponentContext
+import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimpor
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.LifecycleRegistry // Import LifecycleRegistry
+// Import UI Screens
+import com.mnb.manobacademy.features.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
+import com.mnb.manobacademy.features.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
+import com.mnb.manobacademy.features.auth.ui.LoginScreen
 import com.mnb.manobacademy.features.auth.ui.RegistrationScreen
 import com.mnb.manobacademy.features.auth.ui.SplashScreen
+import com.mnb.manobacademy.features.auth.ui.VerificationCodeScreen
+// Import Komponen (untuk dummy preview)
+import com.mnb.manobacademy.features.auth.component.ForgotPasswordComponent
+import com.mnb.manobacademy.features.auth.component.ResetMethod
+// Import Navigation & App
 import com.mnb.manobacademy.navigation.DefaultRootComponent
+// import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()
+import com.mnb.manobacademy.App // Import App Composable
+// Import Tema
+import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
-// Import Napier jika digunakan
-// import io.github.aakira.napier.DebugAntilog
-// import io.github.aakira.napier.Napier
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Napier.base(DebugAntilog()) // Inisialisasi Napier jika digunakan
         var isChecking = true
         lifecycleScope.launch {
-                delay(3000L)
-                isChecking = false
-            }
+            delay(3000L)
+            isChecking = false
+        }
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 isChecking
             }
-
         }
 
-        // 1. Buat DefaultRootComponent menggunakan defaultComponentContext()
-        val root = DefaultRootComponent(defaultComponentContext())
+        // Gunakan defaultComponentContext() dari Decompose untuk membuat ComponentContext dasar
+        // Pastikan constructor DefaultRootComponent menerima ComponentContext
+        val root = DefaultRootComponent(defaultComponentContext()) // <<< Panggil defaultComponentContext()
 
         setContent {
-            // 2. Berikan instance 'root' ke App()
             App(root = root)
         }
     }
 }
 
-// --- Bagian Preview (Lihat poin 2 di bawah) ---
+// --- Bagian Preview ---
+
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun AppAndroidPreview() {
-    // App() // <-- Memanggil App() di sini bermasalah
-    // Sebaiknya preview komponen layar individual, lihat penjelasan di bawah
-    // Contoh preview LoginScreen:
-    LoginScreenPreview()
+    AppTheme {
+        LoginScreenPreview() // Tampilkan salah satu layar sebagai contoh
+    }
 }
 
-// Contoh Preview untuk LoginScreen (lebih disarankan)
-@Preview(showBackground = true)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    // Import LoginScreen jika belum
-    com.mnb.manobacademy.features.auth.ui.LoginScreen(
-        onNavigateToRegister = {}, // Berikan lambda kosong untuk preview
-        onLoginSuccess = {} // Berikan lambda kosong untuk preview
-    )
+    AppTheme {
+        LoginScreen(
+            onNavigateToRegister = {},
+            onLoginSuccess = {},
+            onForgotPasswordClick = {}
+        )
+    }
 }
 
-// Anda bisa membuat preview serupa untuk SplashScreen dan RegistrationScreen
-@Preview(showBackground = true)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun RegistrationScreenPreview() {
-    RegistrationScreen(
-        onNavigateToLogin = {},
-        onRegisterSuccess = {}
-    )
+    AppTheme {
+        RegistrationScreen(
+            onNavigateToLogin = {},
+            onRegisterSuccess = {}
+        )
+    }
 }
 
-// Preview SplashScreen mungkin perlu sedikit penyesuaian jika ada LaunchedEffect
-// Anda bisa membuat Composable wrapper untuk preview jika perlu
-@Preview(showBackground = true)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun SplashScreenPreview() {
-    SplashScreen (
-        onNavigateToLogin = {}
-    )
-    // Catatan: LaunchedEffect dengan delay mungkin tidak berjalan ideal di preview statis
+    AppTheme {
+        SplashScreen (
+            onNavigateToLogin = {}
+        )
+    }
 }
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun VerificationCodeScreenPreview() {
+    AppTheme {
+        VerificationCodeScreen (
+            onNavigateBack = {},
+            onVerifyClick = {},
+            onResendClick = {},
+            emailAddress = "preview@example.com"
+        )
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun ForgotPasswordScreenPreview() {
+    AppTheme {
+        val dummyComponent = object : ForgotPasswordComponent {
+            override val state: Value<ForgotPasswordComponent.State> =
+                MutableValue(ForgotPasswordComponent.State(
+                    maskedPhoneNumber = "+62 812-xxxx-5678",
+                    maskedEmail = "preview-xxx@example.com",
+                    selectedMethod = ResetMethod.NONE,
+                    isResetEnabled = false
+                ))
+            override fun onMethodSelected(method: ResetMethod) {}
+            override fun onResetClicked() {}
+            override fun onBackClicked() {}
+        }
+        ForgotPasswordScreen(component = dummyComponent)
+    }
+}
+
+// --- Preview untuk GuideScreen ---
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun GuideScreenPreview() { // <<< Nama fungsi preview baru
+    AppTheme { // <<< Bungkus dengan AppTheme
+        GuideScreen(
+            onGetStarted = {} // <<< Berikan lambda kosong
+        )
+    }
+}
+// -------------------------------
+
