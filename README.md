@@ -1,11 +1,34 @@
-This is a Kotlin Multiplatform project targeting Android, Desktop.
+# Manob Academy - Aplikasi Pembelajaran Online (KMP)
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+Aplikasi pembelajaran online lintas platform (Android & Desktop) dibangun dengan Kotlin Multiplatform (KMP) dan Compose Multiplatform.
 
+## ✨ Fitur
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+* Splash Screen & Guide/Onboarding (3 halaman swipeable)
+* Autentikasi: Login, Registrasi, Lupa Kata Sandi (UI), Verifikasi OTP (UI)
+* Home Screen Dasar (dengan Logout)
+* Navigasi: Decompose
+* Tema: Material 3, Mode Terang/Gelap Otomatis, Warna Dinamis (Android 12+), Resource Terpusat (Dimensi, String)
+* UI Lintas Platform (Compose)
+* Tampilan Edge-to-Edge (Android)
+
+## 💻 Teknologi
+
+* Kotlin, Compose Multiplatform, Decompose, Kotlin Coroutines
+* Material 3, Gradle Kotlin DSL
+* Android: AndroidX, Splash Screen API, WindowInsets
+
+## 📂 Struktur Proyek
+
+* `/composeApp`: Modul utama KMP.
+    * `commonMain`: Kode & resource bersama (logika, UI, tema, navigasi, fitur).
+    * `androidMain`: Kode & resource spesifik Android (`actual`, `MainActivity`, `res`).
+    * `desktopMain`: Kode & resource spesifik Desktop (`actual`, `main()`).
+
+## 🚀 Setup
+
+* **Prasyarat:** Android Studio (terbaru), JDK 17+.
+* **Android:** Buka di Android Studio, pilih `composeApp`, pilih device, klik Run.
+* **Desktop:** Buka di Android Studio/IntelliJ, cari `main()` di `desktopMain`, klik Run.
+
+Pelajari lebih lanjut tentang [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html).
