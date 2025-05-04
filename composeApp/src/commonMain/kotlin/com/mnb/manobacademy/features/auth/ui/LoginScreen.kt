@@ -271,6 +271,7 @@ private fun MobileLoginLayout(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
+                .navigationBarsPadding()
                 .padding(
                     horizontal = dimens.paddingLarge,
                     vertical = dimens.bottomRowPaddingVertical // Padding vertikal di bagian bawah

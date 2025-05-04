@@ -28,15 +28,5 @@ internal actual fun platformSpecificColorScheme(darkTheme: Boolean, dynamicColor
 
 @Composable
 internal actual fun PlatformSpecificThemeEffects(darkTheme: Boolean, colorScheme: ColorScheme) {
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as? Activity)?.window
-            if (window != null) {
-                window.statusBarColor = Color.Transparent.toArgb() // Atau warna lain jika diinginkan
-                window.navigationBarColor = colorScheme.surface.toArgb() // Atau warna lain jika diinginkan
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-            }
-        }
-    }
+
 }

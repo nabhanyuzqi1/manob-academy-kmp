@@ -82,7 +82,7 @@ fun VerificationCodeScreen(
                     .fillMaxWidth()
                     .navigationBarsPadding() // <<< Padding untuk navigation bar
                     .padding(horizontal = dimens.paddingHuge) // Padding horizontal
-                    .padding(bottom = dimens.paddingMedium) // Padding bawah sedikit
+                    .padding(bottom = dimens.paddingExtraLarge) // Padding bawah sedikit
             ) {
                 PrimaryActionButton(
                     text = stringResource(Res.string.otp_verify_button),

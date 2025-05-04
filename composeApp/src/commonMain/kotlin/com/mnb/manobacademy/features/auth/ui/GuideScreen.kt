@@ -30,6 +30,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.text.font.FontStyle // <<< Import FontStyle
 import androidx.compose.ui.text.font.FontWeight // <<< Import FontWeight (Compose version)
 import com.mnb.manobacademy.features.auth.store.onboardingPages
@@ -109,7 +110,8 @@ fun GuideScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding() // Padding otomatis untuk status bar
-                    .padding(horizontal = dimens.paddingHuge) // Padding kiri & kanan
+                    .navigationBarsPadding().padding(bottom = dimens.paddingHuge)// add more padding
+                    .padding(horizontal = dimens.paddingHuge)// Padding kiri & kanan
                     .padding(bottom = dimens.paddingLarge), // Padding bawah eksplisit
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

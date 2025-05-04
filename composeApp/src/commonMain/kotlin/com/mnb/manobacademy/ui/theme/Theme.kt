@@ -101,7 +101,7 @@ internal expect fun PlatformSpecificThemeEffects(darkTheme: Boolean, colorScheme
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true, // Hanya berlaku di Android 12+
+    dynamicColor: Boolean = false, // Hanya berlaku di Android 12+
     content: @Composable () -> Unit
 ) {
     val dynamicColorScheme = platformSpecificColorScheme(darkTheme, dynamicColor)

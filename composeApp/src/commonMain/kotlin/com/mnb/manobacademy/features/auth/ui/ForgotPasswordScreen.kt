@@ -79,9 +79,10 @@ fun ForgotPasswordScreen(component: ForgotPasswordComponent) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .imePadding()
                     .navigationBarsPadding() // Padding untuk navigation bar
                     .padding(horizontal = dimens.paddingHuge) // Padding horizontal
-                    .padding(bottom = dimens.paddingMedium) // Padding bawah sedikit
+                    .padding(bottom = dimens.paddingHuge) // Padding bawah sedikit
             ) {
                 PrimaryActionButton(
                     text = stringResource(Res.string.forgot_password_reset_button),

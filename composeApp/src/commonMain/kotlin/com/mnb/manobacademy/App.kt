@@ -2,6 +2,7 @@ package com.mnb.manobacademy // Sesuaikan package Anda
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.mnb.manobacademy.navigation.RootComponent // Ganti dengan path RootComponent Anda
@@ -21,13 +22,12 @@ fun App(root: RootComponent) {
     ProvidePlatformSpecificDimens {
         // AppTheme dan RootContent sekarang berada di dalam provider dimensi
         // yang diatur oleh implementasi 'actual' platform.
-        AppTheme {
+        AppTheme() {
             RootContent(
                 component = root,
                 modifier = Modifier
                     .fillMaxSize()
                     // Padding ini mungkin lebih baik ditangani di layar individual
-                    .navigationBarsPadding() // Hanya relevan untuk Android
             )
         }
     }

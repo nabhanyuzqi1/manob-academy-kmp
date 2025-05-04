@@ -1,8 +1,11 @@
 package com.mnb.manobacademy // Sesuaikan package
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -33,7 +36,9 @@ import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
             // Tambahkan kode berikut untuk mengatur durasi splash screen
@@ -43,6 +48,10 @@ class MainActivity : ComponentActivity() {
                 setKeepOnScreenCondition { false }
             }
             super.onCreate(savedInstanceState)
+            enableEdgeToEdge(
+                statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT) // light causes internally enforce the navigation bar to be fully transparent
+            )
         }
         // Gunakan defaultComponentContext() dari Decompose untuk membuat ComponentContext dasar
         // Pastikan constructor DefaultRootComponent menerima ComponentContext
@@ -54,7 +63,9 @@ class MainActivity : ComponentActivity() {
             App(root = root)
         }
     }
+
 }
+
 
 // --- Bagian Preview ---
 
