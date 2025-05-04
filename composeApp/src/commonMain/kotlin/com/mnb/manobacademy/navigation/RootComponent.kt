@@ -32,7 +32,7 @@ interface RootComponent {
         data object Register : Child
         data class VerificationCode(val component: VerificationCodeComponent) : Child
         data class ForgotPassword(val component: ForgotPasswordComponent) : Child
-        data object Guide : Child // <<< TAMBAHKAN GUIDE DI SINI >>>
+        data object Guide : Child
         data class Home(val component: HomeComponent) : Child
     }
 }
@@ -49,19 +49,10 @@ class DefaultRootComponent(
         childStack(
             source = navigation,
             serializer = null, // Atau ScreenConfig.serializer() jika @Serializable
-            // Tentukan initialConfiguration berdasarkan logika (misal: cek first launch)
-            initialConfiguration = determineInitialScreen(), // Ganti ScreenConfig.Splash
+            initialConfiguration = ScreenConfig.Splash,
             handleBackButton = true,
             childFactory = ::createChild
         )
-
-    // Fungsi untuk menentukan layar awal (contoh sederhana)
-    private fun determineInitialScreen(): ScreenConfig {
-        // TODO: Implementasikan logika untuk memeriksa apakah ini peluncuran pertama
-        val isFirstLaunch = true // Ganti dengan logika sebenarnya (misal: cek SharedPreferences)
-        return if (isFirstLaunch) ScreenConfig.Guide else ScreenConfig.Login // Atau Splash jika masih perlu
-    }
-
 
     // Fungsi factory untuk membuat instance Child berdasarkan ScreenConfig
     private fun createChild(config: ScreenConfig, context: ComponentContext): RootComponent.Child =
@@ -90,11 +81,18 @@ class DefaultRootComponent(
                     }
                 )
             )
-            // <<< PENANGANAN UNTUK GUIDE >>>
-            is ScreenConfig.Guide -> Guide // Kembalikan data object Guide
-            // -----------------------------
+            is ScreenConfig.Guide -> Guide
             is ScreenConfig.Home -> Home(
-                DefaultHomeComponent(context)
+                // <<< PERBAIKAN: Teruskan lambda onLogout >>>
+                DefaultHomeComponent(
+                    componentContext = context,
+                    onLogout = {
+                        println("Navigating from Home to Login (Logout)")
+                        // Ganti semua stack dengan Login saat logout
+                        navigation.replaceAll(ScreenConfig.Login)
+                    }
+                )
+                // -----------------------------------------
             )
         }
 }

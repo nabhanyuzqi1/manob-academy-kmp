@@ -32,7 +32,8 @@ kotlin {
             // implementation(libs.androidx.ui.tooling.preview.android) // Bisa dihapus jika compose.preview cukup
             // Tambahkan dependensi Android lain jika perlu
             implementation(libs.androidx.core.splashscreen) // Contoh jika pakai API Splash Android
-            implementation(libs.androidx.lifecycle.viewmodel.compose) // ViewModel Compose Android
+            implementation(libs.androidx.lifecycle.viewmodel.compose) // ViewModel Compose
+            implementation("androidx.compose.material3:material3-window-size-class:1.3.2") // Gunakan versi terbaru jika ada
         }
         commonMain.dependencies {
             // Compose UI Basics
@@ -42,7 +43,8 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.material3) // Jika pakai Material 3
             implementation(compose.components.resources) // Untuk resource KMP
-            implementation(compose.materialIconsExtended) // Untuk ikon
+            implementation(compose.materialIconsExtended) // Untuk
+
 
             // Preview Multiplatform (Gunakan alias yang benar dari TOML)
             implementation(libs.ui.tooling.preview.desktop)

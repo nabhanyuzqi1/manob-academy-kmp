@@ -33,13 +33,27 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
         // 'when' harus mencakup semua tipe Child yang didefinisikan di RootComponent
         when (val child = it.instance) {
             is RootComponent.Child.Splash -> {
-                // Jika Anda ingin splash hanya sekali, logika awal di RootComponent lebih baik
-                // Jika splash tetap diperlukan sebelum Guide/Login:
+                // Panggil shouldShowSplash, lambda onNavigate akan menentukan tujuan berikutnya
                 shouldShowSplash(
                     root = component,
-                    // Navigasi ke layar setelah splash (ditentukan oleh initialConfiguration di RootComponent)
-                    onNavigateToLogin = { /* Mungkin tidak perlu aksi di sini jika initial sudah benar */ }
-                )()
+                    // <<< PERBAIKAN: Gunakan nama parameter yang benar (kemungkinan onNavigateToLogin) >>>
+                    onNavigateToLogin = {
+                        // TODO: Implementasikan logika untuk memeriksa apakah ini peluncuran pertama
+                        val isFirstLaunch = true // Ganti dengan logika sebenarnya
+
+                        println("DEBUG: Splash finished. Checking first launch (isFirstLaunch = $isFirstLaunch)...") // <<< Tambahkan log
+
+                        if (isFirstLaunch) {
+                            // Jika pertama kali, ganti stack dengan Guide
+                            println("DEBUG: Navigating to Guide...") // <<< Tambahkan log
+                            component.navigation.replaceAll(ScreenConfig.Guide)
+                        } else {
+                            // Jika bukan pertama kali, ganti stack dengan Login
+                            println("DEBUG: Navigating to Login...") // <<< Tambahkan log
+                            component.navigation.replaceAll(ScreenConfig.Login)
+                        }
+                    }
+                )() // Panggil lambda Composable yang dikembalikan oleh shouldShowSplash
             }
             is RootComponent.Child.Login -> LoginScreen(
                 onNavigateToRegister = { component.navigation.push(ScreenConfig.Register) },
@@ -66,16 +80,14 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
                 val forgotPasswordComponent = child.component
                 ForgotPasswordScreen(component = forgotPasswordComponent)
             }
-            // <<< PENANGANAN UNTUK GUIDE >>>
             is RootComponent.Child.Guide -> GuideScreen(
                 onGetStarted = {
-                    // Setelah klik Mulai, navigasi ke Login (atau Register?)
-                    // Tandai bahwa guide sudah dilewati (simpan di SharedPreferences/DataStore)
-                    // TODO: Implement logic to mark guide as completed
-                    component.navigation.replaceAll(ScreenConfig.Login) // Ganti semua stack dengan Login
+                    // Setelah klik Mulai di Guide, navigasi ke Login
+                    // TODO: Tandai bahwa guide sudah dilewati
+                    println("DEBUG: Guide finished. Navigating to Login...") // <<< Tambahkan log
+                    component.navigation.replaceAll(ScreenConfig.Login)
                 }
             )
-            // -----------------------------
             is RootComponent.Child.Home -> {
                 when(currentPlatform) {
                     PlatformType.ANDROID -> AndroidHomeScreen(child.component)

@@ -2,6 +2,10 @@
 package com.mnb.manobacademy
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
 import com.mnb.manobacademy.navigation.RootComponent
 
 expect fun shouldShowSplash(root: RootComponent,onNavigateToLogin: () -> Unit) : @Composable () -> Unit
+
+@Composable
+internal expect fun getScreenHeightDp(): Dp

@@ -52,9 +52,24 @@
     <string name="forgot_password_email_icon_desc">Ikon Email</string>
     <string name="forgot_password_illustration_desc">Ilustrasi Lupa Kata Sandi</string>
 
-    !!-- GuideScreen Strings --!!
-    <string name="guide_headline">Tingkatkan Pembelajaran Online Anda</string>
-    <string name="guide_subtitle">Manob Academy</string>
+    !!-- GuideScreen Strings Components --!!
     <string name="guide_button_start">Mulai</string>
     <string name="guide_background_desc">Gambar latar belakang panduan</string>
+    <string name="guide_button_next">Berikutnya</string>
+
+    !!-- GuideScreen Strings 1 --!!
+    <string name="guide_headline_1">Saatnya Jadi Ahli, Bukan Sekadar Tahu!</string>
+    <string name="guide_subtitle_1">Manob Academy: Upgrade Skillmu, Raih Puncak Potensimu.</string>
+
+    !!-- GuideScreen Strings 2 --!!
+    <string name="guide_headline_2">Belajar Seru Bareng Komunitas &amp; Mentor Top!</string>
+    <string name="guide_subtitle_2">Materi Praktis &amp; Kurikulum Up-to-Date Siap Bikin Kamu Jago.</string>
+
+    !!-- GuideScreen Strings 3 --!!
+    <string name="guide_headline_3">Ada Kejutan Spesial Buat Kamu!</string>
+    <string name="guide_subtitle_3">Dapatkan Penawaran Terbaik Khusus Pengguna Baru Manob Academy!</string>
+
+
+    !!-- Home Screen Strings --!!
+    <string name="home_logout_button">Keluar</string>
 </resources>

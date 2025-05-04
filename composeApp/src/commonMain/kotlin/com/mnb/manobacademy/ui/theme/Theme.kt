@@ -107,24 +107,22 @@ fun AppTheme(
     val dynamicColorScheme = platformSpecificColorScheme(darkTheme, dynamicColor)
     val colorScheme = dynamicColorScheme ?: if (darkTheme) darkScheme else lightScheme
 
-    // Panggil efek samping platform SEBELUM MaterialTheme jika mempengaruhi window/latar belakang
     PlatformSpecificThemeEffects(darkTheme, colorScheme)
 
-    // Buat tipografi di dalam AppTheme karena pemuatan font mungkin @Composable
     val typography = createTypography()
-    // Buat instance Dimensi
-    val dimens = Dimensions() // Anda bisa membuat instance berbeda untuk tablet/desktop jika perlu
+    // HAPUS BARIS INI: val dimens = Dimensions()
+    // HAPUS PROVIDER INI: CompositionLocalProvider(LocalDimens provides dimens) { ... }
 
-    // Sediakan Dimens menggunakan CompositionLocalProvider SEBELUM MaterialTheme
-    CompositionLocalProvider(LocalDimens provides dimens) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = typography,
-            content = content
-        )
-    }
+    // Langsung gunakan MaterialTheme. Ia akan mengambil LocalDimens
+    // yang sudah disediakan oleh ProvidePlatformSpecificDimens di luarnya.
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = typography,
+        content = content // Konten akan menerima Dimens yang benar via MaterialTheme.dimens
+    )
 }
-// Helper untuk mengakses Dimens dengan mudah (opsional tapi direkomendasikan)
+
+// Helper ini sudah benar dan akan mengambil Dimens yang disediakan di luar AppTheme
 val MaterialTheme.dimens: Dimensions
     @Composable
     @ReadOnlyComposable

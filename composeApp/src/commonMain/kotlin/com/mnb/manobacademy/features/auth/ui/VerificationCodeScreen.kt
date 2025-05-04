@@ -3,6 +3,8 @@ package com.mnb.manobacademy.features.auth.ui // Sesuaikan dengan package utama 
 // Import komponen & utilitas
 // Import Resources
 import androidx.compose.foundation.layout.* // Wildcard import ok
+import androidx.compose.foundation.rememberScrollState // <<< Import untuk scroll
+import androidx.compose.foundation.verticalScroll // <<< Import untuk scroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack // Gunakan ikon auto-mirrored
 import androidx.compose.material3.* // Wildcard import ok
@@ -10,18 +12,26 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+// Import baru untuk unit Dp
+import androidx.compose.ui.unit.dp
 import com.mnb.manobacademy.features.auth.ui.components.OtpInputFields
 // Pastikan import PrimaryActionButton benar
 import com.mnb.manobacademy.ui.components.PrimaryActionButton
 import com.mnb.manobacademy.ui.theme.dimens // <- Import helper dimens
+// Import fungsi expect untuk tinggi layar
+import com.mnb.manobacademy.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
 import manobacademykmp.composeapp.generated.resources.* // <- Import semua resource
 import org.jetbrains.compose.resources.stringResource // <- Import stringResource
 
 /**
  * Composable untuk layar verifikasi kode OTP.
  * Tombol Verifikasi menempel di bawah, teks Kirim Ulang di bawah input OTP.
+ * Menyesuaikan padding atas pada layar compact yang tinggi.
  *
- * ... (KDoc lainnya tetap sama) ...
+ * @param onNavigateBack Lambda untuk navigasi kembali.
+ * @param onVerifyClick Lambda yang dipanggil saat tombol Verifikasi diklik dengan kode OTP.
+ * @param onResendClick Lambda yang dipanggil saat link Kirim Ulang diklik.
+ * @param emailAddress Opsional, alamat email yang ditampilkan di prompt.
  */
 @OptIn(ExperimentalMaterial3Api::class) // Untuk TopAppBar
 @Composable
@@ -36,6 +46,15 @@ fun VerificationCodeScreen(
     var otpCode by remember { mutableStateOf("") }
     var isOtpComplete by remember { mutableStateOf(false) }
 
+    // Dapatkan tinggi layar menggunakan fungsi expect
+    val screenHeight = getScreenHeightDp()
+    // Tentukan ambang batas tinggi untuk penyesuaian (sesuaikan nilai ini)
+    val tallScreenThreshold = 700.dp
+    // Hitung padding atas tambahan jika layar tinggi
+    val extraTopPadding = if (screenHeight > tallScreenThreshold) 32.dp else 0.dp
+    // Tentukan panjang OTP yang diharapkan
+    val expectedOtpLength = 6
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,7 +68,7 @@ fun VerificationCodeScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surface, // Atau surfaceContainer
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                     navigationIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -61,8 +80,9 @@ fun VerificationCodeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .navigationBarsPadding() // <<< Padding untuk navigation bar
                     .padding(horizontal = dimens.paddingHuge) // Padding horizontal
-                    .padding(bottom = dimens.paddingHuge) // Padding bawah
+                    .padding(bottom = dimens.paddingMedium) // Padding bawah sedikit
             ) {
                 PrimaryActionButton(
                     text = stringResource(Res.string.otp_verify_button),
@@ -71,20 +91,26 @@ fun VerificationCodeScreen(
                             onVerifyClick(otpCode)
                         }
                     },
-                    enabled = isOtpComplete
+                    enabled = isOtpComplete,
+                    modifier = Modifier.fillMaxWidth() // Tombol mengisi lebar
                 )
             }
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        // Konten utama di dalam Column
+        // Konten utama di dalam Column, memungkinkan scroll
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Terapkan padding dari Scaffold (termasuk bottom padding dari bottomBar)
+                .padding(paddingValues) // Terapkan padding dari Scaffold
+                .verticalScroll(rememberScrollState()) // <<< Aktifkan scroll vertikal
                 .padding(horizontal = dimens.paddingHuge), // Padding horizontal utama
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Spacer tambahan di atas untuk layar tinggi
+            Spacer(modifier = Modifier.height(extraTopPadding)) // <<< GUNAKAN PADDING TAMBAHAN
+
+            // Spacer standar di atas teks prompt
             Spacer(modifier = Modifier.height(dimens.spacingGiant)) // Jarak dari app bar
 
             // Teks Prompt
@@ -99,17 +125,18 @@ fun VerificationCodeScreen(
 
             // Input Fields OTP
             OtpInputFields(
-                otpLength = 6,
-                onOtpFilled = { code ->
+                otpLength = expectedOtpLength, // Gunakan variabel panjang OTP
+                onOtpFilled = { code -> // <<< PERBAIKI LAMBDA: Hanya menerima 'code' (String)
                     otpCode = code
-                    isOtpComplete = true
+                    // Set isOtpComplete berdasarkan panjang kode yang diterima
+                    isOtpComplete = code.length == expectedOtpLength
                 },
-                modifier = Modifier.padding(horizontal = dimens.paddingSmall)
+                modifier = Modifier.padding(horizontal = dimens.paddingSmall) // Padding agar tidak terlalu mepet
             )
 
             Spacer(modifier = Modifier.height(dimens.spacingLarge)) // Jarak setelah input OTP
 
-            // --- Teks dan Link Kirim Ulang dipindah ke sini ---
+            // Teks dan Link Kirim Ulang
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -126,12 +153,10 @@ fun VerificationCodeScreen(
                     )
                 }
             }
-            // ----------------------------------------------------
 
-            // Hapus Spacer weight(1f) yang sebelumnya mendorong ke bawah
-            // Spacer(modifier = Modifier.weight(1f))
+            // Spacer tambahan di bawah sebelum BottomBar (opsional)
+            Spacer(modifier = Modifier.height(dimens.spacingLarge))
 
-            // Tombol Verifikasi sudah dipindah ke bottomBar
-        }
-    }
+        } // Akhir Column konten utama
+    } // Akhir Scaffold
 }

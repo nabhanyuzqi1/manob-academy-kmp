@@ -1,7 +1,11 @@
-// --- File: composeApp/src/desktopMain/kotlin/com/mnb/manobacademy/main.kt ---
-// *** PERBAIKAN DI SINI ***
 package com.mnb.manobacademy // Sesuaikan dengan package Anda
 
+// Hapus import yang tidak perlu terkait dimensi:
+// import androidx.compose.runtime.CompositionLocalProvider
+// import com.mnb.manobacademy.ui.theme.CompactDimens
+// import com.mnb.manobacademy.ui.theme.ExpandedDimens
+// import com.mnb.manobacademy.ui.theme.LocalDimens
+// import com.mnb.manobacademy.ui.theme.MediumDimens
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -11,51 +15,46 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.mnb.manobacademy.navigation.DefaultRootComponent
-
-// Import Napier jika digunakan
-// import io.github.aakira.napier.DebugAntilog
-// import io.github.aakira.napier.Napier
-// Hapus import SwingUtilities jika tidak digunakan lagi
-// import javax.swing.SwingUtilities
-// Import Dispatchers jika diperlukan (misal untuk scope)
-// import kotlinx.coroutines.Dispatchers
-// import kotlinx.coroutines.swing.Swing
+import com.mnb.manobacademy.App // <- Import App dari commonMain
 
 @OptIn(ExperimentalDecomposeApi::class) // Diperlukan untuk LifecycleController
-fun main() {
-    // Napier.base(DebugAntilog()) // Inisialisasi Napier jika digunakan
-
-    // 1. Buat LifecycleRegistry untuk Decompose
+fun main() = application { // Pindahkan semua logika ke dalam application block
+    // --- Setup Decompose ---
+    // 1. Buat LifecycleRegistry (Aman di sini)
     val lifecycle = LifecycleRegistry()
 
-    // 2. Buat instance DefaultComponentContext di Main Thread
-    // Cara yang lebih disarankan adalah membuat context sebelum application block
+    // 2. Buat DefaultComponentContext (Aman di sini, terkait dengan lifecycle)
     val rootComponentContext = DefaultComponentContext(lifecycle = lifecycle)
 
-    // 3. Buat RootComponent
+    // 3. Buat RootComponent (Aman di sini, sebelum UI utama)
     val rootComponent = DefaultRootComponent(rootComponentContext)
 
-    application {
-        val windowState = rememberWindowState(width = 800.dp, height = 600.dp)
+    // --- Setup Window & UI ---
+    // State untuk ukuran jendela Desktop
+    val windowState = rememberWindowState(width = 1024.dp, height = 768.dp)
 
-        // 4. Kontrol lifecycle Decompose agar sesuai dengan window (Penting!)
-        LifecycleController(lifecycle, windowState)
+    // 4. Kontrol lifecycle Decompose agar sesuai dengan window (Penting!)
+    LifecycleController(lifecycle, windowState)
 
-        Window(
-            onCloseRequest = ::exitApplication,
-            title = "Manob Academy (Decompose)", // Judul bisa disesuaikan
-            state = windowState
-            // onKeyEvent = { /* Handle back button jika perlu di desktop */ false }
-        ) {
-            // 5. Sediakan CompositionLocalProvider jika diperlukan, tapi hapus LocalUriHandler
-            // CompositionLocalProvider(
-            // HAPUS ATAU GANTI BARIS INI:
-            // androidx.compose.ui.platform.LocalUriHandler provides androidx.compose.ui.platform.DesktopUriHandler(),
-            // Anda mungkin perlu menyediakan dispatcher lain jika diperlukan
-            // ) {
-            // 6. Panggil App dan berikan instance rootComponent
-            App(root = rootComponent) // <-- Berikan parameter root
-            // }
-        }
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "Manob Academy", // Judul bisa disesuaikan
+        state = windowState
+    ) {
+        // --- Tampilkan App ---
+        // Panggil App Composable dari commonMain.
+        // App akan memanggil ProvidePlatformSpecificDimens (expect/actual)
+        // yang implementasi desktop-nya akan menangani dimensi.
+        App(root = rootComponent)
+
+        // **** CATATAN PENTING untuk Error NoSuchMethodError ****
+        // Error java.lang.NoSuchMethodError: 'float androidx.compose.ui.util.MathHelpersKt.fastCbrt(float)'
+        // biasanya disebabkan oleh KETIDAKCOCOKAN VERSI DEPENDENSI.
+        // Pastikan semua dependensi androidx.compose.* (ui, material, animation, foundation, dll.)
+        // menggunakan VERSI YANG SAMA di file build.gradle.kts Anda.
+        // Periksa juga kompatibilitas versi Compose dengan:
+        // - Versi Kotlin yang Anda gunakan
+        // - Versi Compose Compiler Extension
+        // - Versi Skiko (jika diatur secara eksplisit)
     }
 }

@@ -1,13 +1,31 @@
-// --- File: composeApp/src/commonMain/kotlin/features/home/component/HomeComponent.kt ---
-// ... (Kode HomeComponent bisa tetap sebagai placeholder) ...
 package com.mnb.manobacademy.features.home.component
 
 import com.arkivanov.decompose.ComponentContext
 
-interface HomeComponent { }
+// Interface untuk komponen Home
+interface HomeComponent {
+    // Tambahkan fungsi atau state lain yang diperlukan untuk Home
 
+    /** Dipanggil saat pengguna ingin logout. */
+    fun onLogoutClicked()
+}
+
+// Implementasi default untuk komponen Home
 class DefaultHomeComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    private val onLogout: () -> Unit // Callback untuk aksi logout (navigasi)
 ) : HomeComponent, ComponentContext by componentContext {
-    init { }
+
+    override fun onLogoutClicked() {
+        println("Logout initiated from HomeComponent.")
+        // Panggil callback yang akan menangani navigasi (disediakan oleh RootComponent)
+        onLogout()
+    }
+
+    // Tambahkan lifecycle handling jika diperlukan
+    // init {
+    //     lifecycle.onDestroy {
+    //         // Cleanup logic
+    //     }
+    // }
 }

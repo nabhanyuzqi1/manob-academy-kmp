@@ -2,12 +2,14 @@
 
 package com.mnb.manobacademy.ui.theme
 
+import android.R
 import android.app.Activity
 import android.os.Build
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +33,8 @@ internal actual fun PlatformSpecificThemeEffects(darkTheme: Boolean, colorScheme
         SideEffect {
             val window = (view.context as? Activity)?.window
             if (window != null) {
-                window.statusBarColor = colorScheme.primary.toArgb() // Atau warna lain jika diinginkan
+                window.statusBarColor = Color.Transparent.toArgb() // Atau warna lain jika diinginkan
+                window.navigationBarColor = colorScheme.surface.toArgb() // Atau warna lain jika diinginkan
                 WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
             }
         }

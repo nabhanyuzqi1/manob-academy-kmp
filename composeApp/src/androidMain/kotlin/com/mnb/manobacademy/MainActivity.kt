@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.DefaultComponentContext // Import DefaultComponentContext
@@ -34,21 +35,20 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        var isChecking = true
-        lifecycleScope.launch {
-            delay(3000L)
-            isChecking = false
-        }
         installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                isChecking
+            // Tambahkan kode berikut untuk mengatur durasi splash screen
+            setKeepOnScreenCondition { true }
+            lifecycleScope.launch {
+                delay(2000)
+                setKeepOnScreenCondition { false }
             }
+            super.onCreate(savedInstanceState)
         }
-
         // Gunakan defaultComponentContext() dari Decompose untuk membuat ComponentContext dasar
         // Pastikan constructor DefaultRootComponent menerima ComponentContext
         val root = DefaultRootComponent(defaultComponentContext()) // <<< Panggil defaultComponentContext()
+
+        WindowCompat.setDecorFitsSystemWindows(window, false) // <<< Add this line
 
         setContent {
             App(root = root)

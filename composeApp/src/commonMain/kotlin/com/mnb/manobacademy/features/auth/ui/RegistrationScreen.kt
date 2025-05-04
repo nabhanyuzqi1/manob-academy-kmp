@@ -1,6 +1,7 @@
 package com.mnb.manobacademy.features.auth.ui // Sesuaikan dengan package utama Anda
 
 // Import Compose & Material Lengkap
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.* // Wildcard import ok
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+// Import baru untuk unit Dp
+import androidx.compose.ui.unit.dp
 // Import Composable Kustom yang Telah Dipisah
 import com.mnb.manobacademy.features.auth.ui.components.GoogleFacebookLoginRow
 import com.mnb.manobacademy.features.auth.ui.components.StyledOutlinedTextField
@@ -32,6 +35,8 @@ import com.mnb.manobacademy.ui.components.PrimaryActionButton
 import com.mnb.manobacademy.ui.theme.dimens // <- Import helper dimens
 import com.mnb.manobacademy.util.PlatformType
 import com.mnb.manobacademy.util.currentPlatform
+// Import fungsi expect untuk tinggi layar
+import com.mnb.manobacademy.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
 // Import Resources
 import manobacademykmp.composeapp.generated.resources.* // <- Import semua resource
 import org.jetbrains.compose.resources.stringResource // <- Import stringResource
@@ -39,6 +44,7 @@ import org.jetbrains.compose.resources.stringResource // <- Import stringResourc
 /**
  * Composable utama untuk layar Registrasi.
  * Menggunakan String Resources, Dimensions, dan komponen modular dari Tema.
+ * Menyesuaikan padding atas pada layar compact yang tinggi.
  *
  * PENTING: Composable ini HARUS dipanggil dari dalam wrapper `AppTheme` di level aplikasi.
  *
@@ -67,79 +73,20 @@ fun RegistrationScreen(
         // --- Logika Pemisahan UI Berdasarkan Platform ---
         if (currentPlatform == PlatformType.DESKTOP) {
             // --- Layout untuk Platform Desktop ---
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier
-                        .width(dimens.desktopFormMaxWidth) // Gunakan dimensi tema
-                        .fillMaxHeight()
-                        .padding(vertical = dimens.paddingLarge), // Gunakan dimensi tema
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // --- BAGIAN 1: ATAS ---
-                    Spacer(modifier = Modifier.height(dimens.spacingGiant)) // Jarak lebih besar di desktop?
-                    Text(
-                        stringResource(Res.string.register_greeting), // Gunakan string resource
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
-                    )
-                    Spacer(modifier = Modifier.height(dimens.spacingSmall)) // Gunakan dimensi tema
-                    Text(
-                        stringResource(Res.string.register_title), // Gunakan string resource
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
-                    )
-                    Spacer(modifier = Modifier.height(dimens.spacingHuge)) // Gunakan dimensi tema
-
-                    // --- BAGIAN 2: TENGAH (Scrollable) ---
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
-                    ) {
-                        RegisterFormFields(
-                            fullNameValue = fullName,
-                            phoneNumberValue = phoneNumber,
-                            emailValue = email,
-                            passwordValue = password,
-                            termsAcceptedValue = termsAccepted,
-                            onFullNameChange = { fullName = it },
-                            onPhoneNumberChange = { phoneNumber = it },
-                            onEmailChange = { email = it },
-                            onPasswordChange = { password = it },
-                            onTermsAcceptedChange = { termsAccepted = it },
-                            onRegisterClick = onRegisterSuccess
-                        )
-                    } // Akhir Column Scrollable
-
-                    // --- BAGIAN 3: BAWAH ---
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = dimens.paddingLarge, // Gunakan dimensi tema
-                                vertical = dimens.bottomRowPaddingVertical // Gunakan dimensi tema
-                            )
-                    ) {
-                        Text(
-                            text = stringResource(Res.string.register_login_prompt), // Gunakan string resource
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                        TextButton(onClick = onNavigateToLogin) {
-                            Text(
-                                text = stringResource(Res.string.register_login_link), // Gunakan string resource
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                } // Akhir dari Column 450dp
-            } // Akhir dari Box centering
+            DesktopRegisterLayout(
+                fullName = fullName,
+                phoneNumber = phoneNumber,
+                email = email,
+                password = password,
+                termsAccepted = termsAccepted,
+                onFullNameChange = { fullName = it },
+                onPhoneNumberChange = { phoneNumber = it },
+                onEmailChange = { email = it },
+                onPasswordChange = { password = it },
+                onTermsAcceptedChange = { termsAccepted = it },
+                onRegisterSuccess = onRegisterSuccess,
+                onNavigateToLogin = onNavigateToLogin
+            )
         } else {
             // --- Layout untuk Platform Mobile / Lainnya ---
             MobileRegisterLayout(
@@ -161,7 +108,104 @@ fun RegistrationScreen(
 }
 
 /**
+ * Composable terpisah untuk tata letak layar registrasi di platform Desktop.
+ */
+@Composable
+private fun DesktopRegisterLayout(
+    fullName: String,
+    phoneNumber: String,
+    email: String,
+    password: String,
+    termsAccepted: Boolean,
+    onFullNameChange: (String) -> Unit,
+    onPhoneNumberChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onTermsAcceptedChange: (Boolean) -> Unit,
+    onRegisterSuccess: () -> Unit,
+    onNavigateToLogin: () -> Unit
+) {
+    val dimens = MaterialTheme.dimens
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .width(dimens.desktopFormMaxWidth) // Gunakan dimensi tema
+                .fillMaxHeight()
+                .padding(vertical = dimens.paddingLarge), // Gunakan dimensi tema
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // --- BAGIAN 1: ATAS ---
+            Spacer(modifier = Modifier.height(dimens.spacingGiant)) // Jarak lebih besar di desktop?
+            Text(
+                stringResource(Res.string.register_greeting), // Gunakan string resource
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
+            )
+            Spacer(modifier = Modifier.height(dimens.spacingSmall)) // Gunakan dimensi tema
+            Text(
+                stringResource(Res.string.register_title), // Gunakan string resource
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
+            )
+            Spacer(modifier = Modifier.height(dimens.spacingHuge)) // Gunakan dimensi tema
+
+            // --- BAGIAN 2: TENGAH (Scrollable) ---
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
+            ) {
+                RegisterFormFields(
+                    fullNameValue = fullName,
+                    phoneNumberValue = phoneNumber,
+                    emailValue = email,
+                    passwordValue = password,
+                    termsAcceptedValue = termsAccepted,
+                    onFullNameChange = onFullNameChange,
+                    onPhoneNumberChange = onPhoneNumberChange,
+                    onEmailChange = onEmailChange,
+                    onPasswordChange = onPasswordChange,
+                    onTermsAcceptedChange = onTermsAcceptedChange,
+                    onRegisterClick = onRegisterSuccess
+                )
+            } // Akhir Column Scrollable
+
+            // --- BAGIAN 3: BAWAH ---
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = dimens.paddingLarge, // Gunakan dimensi tema
+                        vertical = dimens.bottomRowPaddingVertical // Gunakan dimensi tema
+                    )
+            ) {
+                Text(
+                    text = stringResource(Res.string.register_login_prompt), // Gunakan string resource
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                TextButton(onClick = onNavigateToLogin) {
+                    Text(
+                        text = stringResource(Res.string.register_login_link), // Gunakan string resource
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        } // Akhir dari Column 450dp
+    } // Akhir dari Box centering
+}
+
+
+/**
  * Composable terpisah untuk tata letak layar registrasi di platform Mobile/Lainnya.
+ * Menyesuaikan padding atas pada layar compact yang tinggi.
  */
 @Composable
 private fun MobileRegisterLayout(
@@ -180,12 +224,22 @@ private fun MobileRegisterLayout(
 ) {
     // Akses dimensi dari tema
     val dimens = MaterialTheme.dimens
+    // Dapatkan tinggi layar menggunakan fungsi expect
+    val screenHeight = getScreenHeightDp()
+    // Tentukan ambang batas tinggi untuk penyesuaian (sesuaikan nilai ini)
+    val tallScreenThreshold = 700.dp
+    // Hitung padding atas tambahan jika layar tinggi
+    val extraTopPadding = if (screenHeight > tallScreenThreshold) 32.dp else 0.dp
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // --- BAGIAN 1: ATAS ---
+        // Spacer tambahan di atas untuk layar tinggi
+        Spacer(modifier = Modifier.height(extraTopPadding)) // <<< GUNAKAN PADDING TAMBAHAN
+
+        // Spacer standar di atas teks greeting
         Spacer(modifier = Modifier.height(dimens.topSpacingMobile)) // Gunakan dimensi tema
         Text(
             stringResource(Res.string.register_greeting), // Gunakan string resource
@@ -205,10 +259,10 @@ private fun MobileRegisterLayout(
         // --- BAGIAN 2: TENGAH (Scrollable & Weighted) ---
         Column(
             modifier = Modifier
-                .weight(1f)
+                .weight(1f) // Mengisi ruang vertikal yang tersisa
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
+                .verticalScroll(rememberScrollState()) // Memungkinkan scroll
+                .imePadding() // Menangani inset keyboard
                 .padding(horizontal = dimens.paddingHuge) // Gunakan dimensi tema
         ) {
             RegisterFormFields(
@@ -232,6 +286,7 @@ private fun MobileRegisterLayout(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
+                .navigationBarsPadding() // Padding untuk navigation bar
                 .padding(
                     horizontal = dimens.paddingLarge, // Gunakan dimensi tema
                     vertical = dimens.bottomRowPaddingVertical // Gunakan dimensi tema
@@ -255,6 +310,7 @@ private fun MobileRegisterLayout(
 /**
  * Composable yang berisi elemen-elemen form registrasi.
  * Menggunakan String Resources, Dimensions, dan komponen modular dari Tema.
+ * (Tidak ada perubahan di sini)
  */
 @Composable
 private fun RegisterFormFields(
@@ -324,7 +380,9 @@ private fun RegisterFormFields(
 
     // Checkbox Persetujuan Syarat & Ketentuan
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .clickable { onTermsAcceptedChange(!termsAcceptedValue) } // Klik baris untuk toggle
+            .padding(vertical = dimens.spacingSmall), // Padding vertikal untuk area klik
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -351,23 +409,36 @@ private fun RegisterFormFields(
     PrimaryActionButton(
         text = stringResource(Res.string.register_button_register), // String resource
         onClick = onRegisterClick,
-        enabled = termsAcceptedValue // Aktif jika termsAccepted == true
+        enabled = termsAcceptedValue, // Aktif jika termsAccepted == true
+        modifier = Modifier.fillMaxWidth() // Tombol mengisi lebar
     )
 
     Spacer(modifier = Modifier.height(dimens.spacingLarge)) // Dimensi tema
 
-    // Divider dan Teks Pemisah
-    HorizontalDivider(
-        modifier = Modifier.fillMaxWidth().padding(bottom = dimens.paddingLarge), // Dimensi tema
-        thickness = dimens.dividerThickness, // Dimensi tema
-        color = MaterialTheme.colorScheme.outlineVariant // Warna tema
-    )
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    // Divider dan Teks Pemisah (Gunakan Row dengan Divider seperti di LoginScreen)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            thickness = dimens.dividerThickness,
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
         Text(
             text = stringResource(Res.string.register_divider_text), // String resource
-            color = MaterialTheme.colorScheme.onSurfaceVariant // Warna tema
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(horizontal = dimens.paddingMedium)
+        )
+        HorizontalDivider(
+            modifier = Modifier.weight(1f),
+            thickness = dimens.dividerThickness,
+            color = MaterialTheme.colorScheme.outlineVariant
         )
     }
+
     Spacer(modifier = Modifier.height(dimens.spacingLarge)) // Dimensi tema
 
     // Gunakan Komponen Social Login Buttons yang Baru
@@ -377,5 +448,5 @@ private fun RegisterFormFields(
         onFacebookClick = { /* TODO: Implement Facebook sign up */ }
     )
 
-    Spacer(modifier = Modifier.height(dimens.spacingLarge)) // Dimensi tema
+    Spacer(modifier = Modifier.height(dimens.spacingMedium)) // Dimensi tema
 }
