@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 import java.io.FileInputStream
+import java.io.FileOutputStream // Import untuk task generate (jika menggunakan metode resource)
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -42,6 +43,12 @@ if (supabaseUrl.isBlank() || supabaseAnonKey.isBlank()) {
 println("Application Mode: $appMode (isDevelopmentMode: $isDevelopmentMode)") // Log mode
 // ---------------------------
 
+// Hapus task generate jika menggunakan dotenv untuk desktop
+/*
+tasks.register("generateSupabaseProperties") {
+    // ... (definisi task generate resource) ...
+}
+*/
 
 kotlin {
     androidTarget {
@@ -62,7 +69,13 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
                 implementation(libs.kotlinx.coroutines.swing) // Atau coroutine engine lain
+                // <<< Tambahkan dependensi dotenv-kotlin >>>
+                implementation("io.github.cdimascio:dotenv-kotlin:6.4.1") // Cek versi terbaru
+
+                // ---------------------------------------
             }
+            // Hapus penambahan resource jika menggunakan dotenv
+            // resources.srcDirs(tasks.named("generateSupabaseProperties").map { it.outputs.files })
         }
 
         val androidMain by getting {
@@ -105,6 +118,7 @@ kotlin {
 
                 // Coroutines
                 implementation(libs.kotlinx.coroutines.core)
+
             }
         }
     }
@@ -116,7 +130,7 @@ android {
 
     defaultConfig {
         applicationId = "com.mnb.manobacademy"
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt() // Minimal 24 direkomendasikan Supabase
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
@@ -178,3 +192,4 @@ compose.desktop {
         }
     }
 }
+
