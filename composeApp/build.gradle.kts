@@ -11,7 +11,6 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler) // Plugin untuk compiler
     alias(libs.plugins.kotlinSerialization)
-    // id("kotlin-parcelize") // Tidak perlu jika tidak pakai @Parcelize Essenty
 }
 
 // --- Baca local.properties ---
@@ -165,7 +164,7 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true // <<< PASTIKAN INI true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
@@ -183,7 +182,7 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "com.mnb.manobacademy.MainKt" // Pastikan package dan nama file benar
+        mainClass = "com.mnb.manobacademy.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

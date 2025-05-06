@@ -42,18 +42,19 @@ data class Dimensions(
     val textFieldCornerRadius: Dp = 4.dp, // DISET ke 4.dp (sedikit radius)
     val primaryButtonCornerRadius: Dp = 8.dp, // DISET ke 8.dp (sedikit radius)
 
-    // New Added Dimens
+    // New Added Dimens (from HomeScreen context)
     val cardCornerRadiusLarge: Dp = 16.dp,
     val cardCornerRadiusMedium: Dp = 12.dp,
     val cardElevation: Dp = 2.dp,
-    val searchBarHeight: Dp = 56.dp,
+    val searchBarHeight: Dp = 56.dp, // Example, ensure this matches OutlinedTextField desired height
     val categoryChipPaddingHorizontal: Dp = 12.dp,
     val categoryChipPaddingVertical: Dp = 8.dp,
-    val favoriteClassImageHeight: Dp = 100.dp,
+    val favoriteClassImageHeight: Dp = 100.dp, // Height for the image box in FavoriteCourseCard
     val classCardWidth: Dp = 180.dp,
     val classCardImageHeight: Dp = 100.dp,
     val instructorAvatarSize: Dp = 60.dp,
     val bottomNavIconSize: Dp = 24.dp,
+    val spacingExtraSmall: Dp = 2.dp, // Added for finer control, e.g. in CourseCard
 
 
     // Lain-lain
@@ -102,6 +103,8 @@ val CompactDimens = Dimensions(
     spacingHuge = 24.dp,
     spacingMassive = 32.dp,
     spacingGiant = 48.dp,
+    spacingExtraSmall = 2.dp,
+
 
     logoSizeSmall = 80.dp,
     logoSizeLarge = 100.dp,
@@ -129,9 +132,9 @@ val CompactDimens = Dimensions(
     bottomNavIconSize = 20.dp,
 
     dividerThickness = 1.dp,
-    desktopFormMaxWidth = 400.dp,
+    desktopFormMaxWidth = 400.dp, // Max width for forms on compact screens
     topSpacingMobile = 48.dp,
-    topSpacingDesktop = 24.dp, // Tidak relevan di compact
+    topSpacingDesktop = 24.dp, // Kurang relevan di compact, tapi bisa untuk konsistensi
     bottomRowPaddingVertical = 12.dp,
     formInternalPaddingVertical = 12.dp,
 
@@ -154,7 +157,7 @@ val CompactDimens = Dimensions(
 
 // Medium: Tablet portrait kecil, ponsel landscape (600-839dp)
 // Menggunakan nilai default dari data class Dimensions yang sudah disesuaikan
-val MediumDimens = Dimensions()
+val MediumDimens = Dimensions() // Uses the default values defined in the Dimensions data class
 
 // Expanded: Tablet landscape, desktop (840dp+)
 val ExpandedDimens = Dimensions(
@@ -171,6 +174,7 @@ val ExpandedDimens = Dimensions(
     spacingHuge = 40.dp,
     spacingMassive = 56.dp,
     spacingGiant = 72.dp,
+    spacingExtraSmall = 4.dp,
 
     logoSizeSmall = 120.dp,
     logoSizeLarge = 150.dp,
@@ -192,28 +196,28 @@ val ExpandedDimens = Dimensions(
     categoryChipPaddingHorizontal = 16.dp,
     categoryChipPaddingVertical = 10.dp,
     favoriteClassImageHeight = 120.dp,
-    classCardWidth = 200.dp,
+    classCardWidth = 220.dp, // Wider cards for expanded screens
     classCardImageHeight = 120.dp,
     instructorAvatarSize = 72.dp,
     bottomNavIconSize = 28.dp,
 
     dividerThickness = 1.dp,
-    desktopFormMaxWidth = 500.dp,
-    topSpacingMobile = 80.dp, // Tidak relevan
+    desktopFormMaxWidth = 500.dp, // Max width for forms on larger screens
+    topSpacingMobile = 80.dp, // Kurang relevan, utamakan topSpacingDesktop
     topSpacingDesktop = 56.dp,
     bottomRowPaddingVertical = 24.dp,
     formInternalPaddingVertical = 24.dp,
 
     splashLogoSize = 250.dp,
-    illustrationSizeMedium = 140.dp,
-    illustrationSizeLarge = 180.dp,
+    illustrationSizeMedium = 160.dp, // Slightly larger illustrations
+    illustrationSizeLarge = 200.dp,
     selectionCardPadding = 20.dp,
     selectionCardIconSize = 48.dp,
     selectionCardIconPadding = 16.dp,
-    selectionCardCornerRadius = 12.dp, // TETAP (tidak diubah sesuai permintaan, mengikuti nilai Expanded sebelumnya)
+    selectionCardCornerRadius = 12.dp, // Bisa disesuaikan untuk Expanded, atau TETAP jika desain konsisten
     selectionCardSpacing = 20.dp,
 
-    guideLogoSize = 100.dp, // Tetap sama dari Medium (default), bisa disesuaikan jika perlu
+    guideLogoSize = 120.dp, // Konsisten dengan Medium atau sedikit lebih besar
     guideIndicatorWidth = 32.dp,
     guideIndicatorHeight = 5.dp,
     guideIndicatorSpacing = 10.dp,
@@ -224,9 +228,9 @@ val ExpandedDimens = Dimensions(
 
 /**
  * CompositionLocal untuk menyediakan instance Dimensions ke seluruh pohon Composable.
- * Defaultnya menggunakan MediumDimens, akan di-override berdasarkan WindowSizeClass.
+ * Defaultnya menggunakan MediumDimens. Akan di-override oleh ProvideDimens.
  */
-val LocalDimens = compositionLocalOf { MediumDimens } // Defaultnya sekarang MediumDimens dengan corner radius yang sedikit
+val LocalDimens = compositionLocalOf { MediumDimens }
 
 /**
  * Properti helper untuk mengakses Dimensions saat ini dari CompositionLocal.
@@ -234,5 +238,21 @@ val LocalDimens = compositionLocalOf { MediumDimens } // Defaultnya sekarang Med
  */
 val AppDimens: Dimensions
     @Composable
-    @ReadOnlyComposable // Add this line
+    @ReadOnlyComposable
     get() = LocalDimens.current
+
+/**
+ * Composable function to provide the appropriate Dimensions based on the window size class.
+ * This should be used at a high level in your app's theme, typically wrapping the main content.
+ *
+ * @param windowWidthSizeClass The current window width size class of the device.
+ * @param content The composable content that will have access to the provided dimensions.
+ *
+ * Example Usage in your AppTheme:
+ * ```
+ * val windowSizeClass = calculateWindowSizeClass(activity = LocalContext.current as Activity)
+ * ProvideDimens(windowWidthSizeClass = windowSizeClass.widthSizeClass) {
+ * // Your app's Scaffold and content
+ * }
+ * ```
+ */

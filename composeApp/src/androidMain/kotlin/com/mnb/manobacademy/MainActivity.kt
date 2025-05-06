@@ -7,6 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Draw
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -15,6 +19,13 @@ import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimpor
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.mnb.manobacademy.features.home.ui.HomeScreen
+import com.mnb.manobacademy.models.BottomNavItem
+import com.mnb.manobacademy.models.Category
+import com.mnb.manobacademy.models.Course
+import com.mnb.manobacademy.models.FavoriteCourse
+import com.mnb.manobacademy.models.Instructor
+import com.mnb.manobacademy.models.dummyNewsItems
 // Import UI Screens
 import com.mnb.manobacademy.views.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
 import com.mnb.manobacademy.views.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
@@ -31,8 +42,13 @@ import com.mnb.manobacademy.navigation.DefaultRootComponent
 // import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()
 // Import Tema
 import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
+import com.mnb.manobacademy.views.home.component.HomeComponent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import manobacademykmp.composeapp.generated.resources.Res
+import manobacademykmp.composeapp.generated.resources.home_category_art
+import manobacademykmp.composeapp.generated.resources.home_category_design
+import manobacademykmp.composeapp.generated.resources.home_category_photography
 
 
 class MainActivity : ComponentActivity() {
@@ -170,5 +186,53 @@ fun GuideScreenPreview() { // <<< Nama fungsi preview baru
         )
     }
 }
-// -------------------------------
+
+// --- Preview untuk HomeScreen ---
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    AppTheme { // Ensure AppTheme provides MaterialTheme and Dimens
+        // Buat dummy HomeComponent
+        val dummyHomeComponent = object : HomeComponent {
+            // Sediakan state default untuk preview
+            override val state: Value<HomeComponent.State> =
+                MutableValue(HomeComponent.State(
+                    userName = "Nama Pengguna Preview",
+                    favoriteCourse = FavoriteCourse("fav_prev", "Judul Kelas Favorit Preview", "Instruktur Preview", 4.5f, 10, 20, ""),
+                    categories = listOf(
+                        Category(Res.string.home_category_art, Icons.Default.Palette),
+                        Category(Res.string.home_category_photography, Icons.Default.PhotoCamera),
+                        Category(Res.string.home_category_design, Icons.Default.Draw)
+                    ),
+                    selectedCategory = Category(Res.string.home_category_art, Icons.Default.Palette), // Example selected
+                    courses = listOf(
+                        Course("c_prev1", "Judul Kelas Preview 1", "Kategori A", 4.2f, "Rp 100.000", "Rp 50.000", ""),
+                        Course("c_prev2", "Judul Kelas Preview 2", "Kategori B", 4.9f, "Rp 150.000", "Rp 75.000", "")
+                    ),
+                    instructors = listOf(
+                        Instructor("i_prev1", "Instruktur Satu Preview", ""),
+                        Instructor("i_prev2", "Instruktur Dua Preview", "")
+                    ),
+                    newsItems = dummyNewsItems, // Added dummy news items for preview
+                    currentBottomNavRoute = BottomNavItem.Home.route
+                ))
+
+            // Implementasi fungsi kosong untuk preview
+            override fun onSearchQueryChanged(query: String) { println("Preview: Search changed to $query") }
+            override fun onCategorySelected(category: Category) { println("Preview: Category selected: ${category.nameRes}") }
+            override fun onCourseClicked(courseId: String) { println("Preview: Course clicked: $courseId") }
+            override fun onInstructorClicked(instructorId: String) { println("Preview: Instructor clicked: $instructorId") }
+            override fun onBottomNavItemSelected(route: String) { println("Preview: Nav item selected: $route") }
+            override fun onLogoutClicked() { println("Preview: Logout clicked") }
+            // Added missing methods for preview
+            override fun onNotificationClicked() { println("Preview: Notification clicked") }
+            override fun onViewAllClassesClicked() { println("Preview: View All Classes clicked") }
+            override fun onViewAllInstructorsClicked() { println("Preview: View All Instructors clicked") }
+            override fun onViewAllNewsClicked() { println("Preview: View All News clicked") }
+            override fun onNewsItemClicked(newsId: String) { println("Preview: News item clicked: $newsId") }
+        }
+        // Panggil HomeScreen dengan dummy component
+        HomeScreen(component = dummyHomeComponent)
+    }
+}
 

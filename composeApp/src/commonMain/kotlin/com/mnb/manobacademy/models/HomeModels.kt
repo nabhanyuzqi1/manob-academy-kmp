@@ -28,6 +28,16 @@ data class FavoriteCourse(
     val imageUrl: String
 )
 
+// --- Data Model untuk Berita (News) ---
+// TODO: This data class should be in your models package
+data class NewsItem(
+    val id: String,
+    val title: String,
+    val source: String,
+    val date: String,
+    val imageUrl: String // Placeholder for image resource/URL
+)
+
 // Contoh data dummy (bisa dihapus nanti)
 val dummyCategories = listOf(
     Category(Res.string.home_category_art, Icons.Default.Palette),
@@ -48,6 +58,14 @@ val dummyInstructors = listOf(
     Instructor("i4", "Instruktur D", "")
 )
 
+// TODO: This dummy list should be replaced by data from HomeComponent.state.newsItems
+val dummyNewsItems = listOf(
+    NewsItem("n1", "Peluncuran Fitur AI di Manob Academy!", "Blog Manob Academy", "5 Mei 2025", ""),
+    NewsItem("n2", "Tips Produktif Belajar Online", "Info Edukasi", "4 Mei 2025", ""),
+    NewsItem("n3", "Diskon Spesial Kursus Desain", "Promo Terkini", "3 Mei 2025", ""),
+    NewsItem("n4", "Wawancara Eksklusif dengan Instruktur Populer", "Manob Spotlight", "2 Mei 2025", "")
+)
+
 // Data untuk Bottom Navigation
 sealed class BottomNavItem(val route: String, val titleRes: StringResource, val icon: ImageVector) {
     data object Home : BottomNavItem("home", Res.string.home_bottom_nav_home, Icons.Filled.Home)
@@ -64,3 +82,4 @@ val bottomNavItems = listOf(
     BottomNavItem.Dashboard,
     BottomNavItem.Profile
 )
+

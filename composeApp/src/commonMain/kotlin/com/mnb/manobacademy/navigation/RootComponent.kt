@@ -120,26 +120,50 @@ class DefaultRootComponent(
             )
             is ScreenConfig.Guide -> Guide // Kembalikan data object Guide
             is ScreenConfig.Home -> Home(
-                // <<< PERBAIKAN: Lengkapi parameter DefaultHomeComponent >>>
+                // Parameter DefaultHomeComponent telah dilengkapi
                 DefaultHomeComponent(
                     componentContext = context,
                     onLogout = {
-                        println("Navigating from Home to Login (Logout)")
+                        println("Navigasi dari Home ke Login (Logout)")
                         navigation.replaceAll(ScreenConfig.Login)
                     },
-                    // Tambahkan callback lain yang diperlukan oleh constructor DefaultHomeComponent
-                    // Misalnya:
                     onNavigateToCourseDetail = { courseId ->
-                        println("Navigate to Course Detail: $courseId")
-                        // TODO: Implementasi navigasi ke detail kursus
+                        println("Navigasi ke Detail Kursus: $courseId")
+                        // TODO: Implementasi navigasi ke detail kursus. Contoh:
                         // navigation.push(ScreenConfig.CourseDetail(courseId))
                     },
-                    onNavigateToLogin = { // Mungkin tidak perlu jika sudah ada onLogout
-                        println("Navigate to Login requested from Home (redundant?)")
+                    onNavigateToLogin = { // Callback ini mungkin redundan jika sudah ada onLogout
+                        println("Permintaan navigasi ke Login dari Home")
                         navigation.replaceAll(ScreenConfig.Login)
+                    },
+                    // Callback tambahan yang diperlukan oleh DefaultHomeComponent:
+                    onNavigateToNotifications = {
+                        println("Navigasi ke Notifikasi")
+                        // TODO: Implementasi navigasi ke layar notifikasi. Contoh:
+                        // navigation.push(ScreenConfig.Notifications)
+                    },
+                    onNavigateToAllClasses = {
+                        println("Navigasi ke Semua Kelas")
+                        // TODO: Implementasi navigasi ke layar semua kelas. Contoh:
+                        // navigation.push(ScreenConfig.AllClasses)
+                    },
+                    onNavigateToAllInstructors = {
+                        println("Navigasi ke Semua Instruktur")
+                        // TODO: Implementasi navigasi ke layar semua instruktur. Contoh:
+                        // navigation.push(ScreenConfig.AllInstructors)
+                    },
+                    onNavigateToAllNews = {
+                        println("Navigasi ke Semua Berita")
+                        // TODO: Implementasi navigasi ke layar semua berita. Contoh:
+                        // navigation.push(ScreenConfig.AllNews)
+                    },
+                    onNavigateToNewsDetail = { newsId ->
+                        println("Navigasi ke Detail Berita: $newsId")
+                        // TODO: Implementasi navigasi ke detail berita. Contoh:
+                        // navigation.push(ScreenConfig.NewsDetail(newsId))
                     }
                 )
-                // ----------------------------------------------------------
             )
+
         }
 }

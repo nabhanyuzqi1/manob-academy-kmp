@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    !!-- LoginScreen Strings --!!
-    <string name="app_name">Manob Academy</string> <string name="login_header_title">Manob Academy</string>
+    <string name="app_name">Manob Academy</string>
+    <string name="login_header_title">Manob Academy</string>
     <string name="login_header_subtitle">Masuk ke Akun Anda</string>
     <string name="login_email_label">Alamat Email</string>
     <string name="login_email_icon_desc">Ikon Email</string>
@@ -16,22 +16,22 @@
     <string name="login_signup_link">Daftar di sini</string>
     <string name="logo_content_description">Logo Manob Academy</string>
 
-    !!-- RegistrationScreen Strings --!!
     <string name="register_greeting">Hai,</string>
     <string name="register_title">Buat Akun</string>
     <string name="register_fullname_label">Nama Lengkap</string>
     <string name="register_fullname_icon_desc">Ikon Nama Lengkap</string>
     <string name="register_phone_label">Nomor Telepon</string>
     <string name="register_phone_icon_desc">Ikon Telepon</string>
-    <string name="register_email_label">Alamat Email</string> <string name="register_email_icon_desc">Ikon Email</string>
-    <string name="register_password_label">Kata Sandi</string> <string name="register_password_icon_desc">Ikon Kunci</string> <string name="register_terms_prompt">Dengan melanjutkan, Anda menerima Kebijakan Privasi dan Ketentuan Penggunaan kami</string>
+    <string name="register_email_label">Alamat Email</string>
+    <string name="register_email_icon_desc">Ikon Email</string>
+    <string name="register_password_label">Kata Sandi</string>
+    <string name="register_password_icon_desc">Ikon Kunci</string>
+    <string name="register_terms_prompt">Dengan melanjutkan, Anda menerima Kebijakan Privasi dan Ketentuan Penggunaan kami</string>
     <string name="register_button_register">Daftar</string>
     <string name="register_divider_text">Atau daftar dengan</string>
     <string name="register_login_prompt">Sudah punya akun? </string>
     <string name="register_login_link">Masuk</string>
 
-
-    !!-- VerificationCodeScreen Strings --!!
     <string name="otp_screen_title">Verifikasi OTP</string>
     <string name="otp_prompt">Masukkan kode verifikasi yang baru saja kami kirimkan ke alamat email Anda.</string>
     <string name="otp_verify_button">Verifikasi</string>
@@ -40,8 +40,6 @@
     <string name="otp_field_content_description">Input digit ke-{index} kode OTP</string>
     <string name="otp_back_button_desc">Kembali</string>
 
-
-    !!-- ForgotPasswordScreen Strings --!!
     <string name="forgot_password_screen_title">Lupa Kata Sandi</string>
     <string name="forgot_password_prompt">Pilih detail kontak mana yang harus kami gunakan untuk mengatur ulang kata sandi Anda</string>
     <string name="forgot_password_option_sms_title">via SMS:</string>
@@ -52,37 +50,31 @@
     <string name="forgot_password_email_icon_desc">Ikon Email</string>
     <string name="forgot_password_illustration_desc">Ilustrasi Lupa Kata Sandi</string>
 
-    !!-- GuideScreen Strings Components --!!
     <string name="guide_button_start">Mulai</string>
     <string name="guide_background_desc">Gambar latar belakang panduan</string>
     <string name="guide_button_next">Berikutnya</string>
 
-    !!-- GuideScreen Strings 1 --!!
     <string name="guide_headline_1">Saatnya Jadi Ahli, Bukan Sekadar Tahu!</string>
     <string name="guide_subtitle_1">Manob Academy: Upgrade Skillmu, Raih Puncak Potensimu.</string>
 
-    !!-- GuideScreen Strings 2 --!!
     <string name="guide_headline_2">Belajar Seru Bareng Komunitas &amp; Mentor Top!</string>
     <string name="guide_subtitle_2">Materi Praktis &amp; Kurikulum Up-to-Date Siap Bikin Kamu Jago.</string>
 
-    !!-- GuideScreen Strings 3 --!!
     <string name="guide_headline_3">Ada Kejutan Spesial Buat Kamu!</string>
     <string name="guide_subtitle_3">Dapatkan Penawaran Terbaik Khusus Pengguna Baru Manob Academy!</string>
 
-
-    !!-- Home Screen Strings --!!
     <string name="home_logout_button">Keluar</string>
-    <string name="home_greeting">Hai, %1$s</string> <string name="home_search_placeholder">Cari kelas atau topik</string>
+    <string name="home_greeting">Hai, %1$s</string>
+    <string name="home_greeting_short">Hai</string> <string name="home_notification_icon_desc">Notifikasi</string> <string name="home_search_placeholder">Cari kelas atau topik</string>
     <string name="home_favorite_class_title">Kelas Favorit</string>
-    <string name="home_lectures">%1$d Kuliah</string>
+    <string name="home_no_favorite_course_placeholder">Belum ada kelas favorit.</string> <string name="home_lectures">%1$d Kuliah</string>
     <string name="home_enrolled">%1$d Terdaftar</string>
-    <string name="home_more">Lainnya ></string>
-    <string name="home_category_art">Seni</string>
+    <string name="home_more">Lainnya</string>
+    <string name="home_category_title">Kategori</string> <string name="home_category_art">Seni</string>
     <string name="home_category_photography">Fotografi</string>
     <string name="home_category_design">Desain</string>
     <string name="home_category_video">Video</string>
-    <string name="home_class_beginners">Kelas Pemula</string>
-    <string name="home_instructor_title">Instruktur</string>
+    <string name="home_class_beginners">Kelas Pemula</string> <string name="home_instructor_title">Instruktur</string>
     <string name="home_view_all">Lihat Semua</string>
     <string name="home_bottom_nav_home">Beranda</string>
     <string name="home_bottom_nav_classes">Kelas</string>
@@ -93,5 +85,10 @@
     <string name="home_class_icon_desc">Ikon Kelas</string>
     <string name="home_instructor_avatar_desc">Avatar Instruktur</string>
     <string name="home_rating_desc">Rating %1$.1f dari 5</string>
-
+    <string name="home_filter_best">Terbaik</string>
+    <string name="home_filter_newest">Terbaru</string>
+    <string name="home_filter_price">Harga</string>
+    <string name="home_popular_class_title">Kelas Populer</string>
+    <string name="home_best_seller_title">Kelas Terbaik</string> <string name="home_news_title">Berita</string>
+    <string name="home_news_image_desc">Gambar Berita</string> <string name="home_all_classes_title">Semua Kelas</string>
 </resources>
