@@ -1,97 +1,110 @@
-// --- File: composeApp/build.gradle.kts ---
-// *** PERBAIKAN DI SINI ***
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinSerialization) // Anda punya ini, bagus untuk Supabase/lainnya
-    id("kotlin-parcelize") // Pastikan ini ada untuk Essenty jika diperbaiki nanti
+    alias(libs.plugins.composeCompiler) // Plugin untuk compiler
+    alias(libs.plugins.kotlinSerialization)
+    // id("kotlin-parcelize") // Tidak perlu jika tidak pakai @Parcelize Essenty
 }
+
+// --- Baca local.properties ---
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
+    try {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    } catch (e: Exception) {
+        println("Warning: Could not load local.properties: ${e.message}")
+    }
+} else {
+    println("Warning: local.properties not found in root project. Supabase credentials might be missing.")
+}
+val supabaseUrl = localProperties.getProperty("supabase.url", "")
+val supabaseAnonKey = localProperties.getProperty("supabase.anon.key", "")
+if (supabaseUrl.isBlank() || supabaseAnonKey.isBlank()) {
+    println("Warning: Supabase URL or Key is missing in local.properties. Build might fail or app might not connect.")
+}
+// ---------------------------
+
 
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_11) // Sesuaikan jika perlu
         }
     }
 
-    jvm("desktop")
+    jvm("desktop") {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11" // Sesuaikan jika perlu
+        }
+    }
 
     sourceSets {
-        val desktopMain by getting
-
-        androidMain.dependencies {
-            implementation(compose.preview) // Untuk @Preview Android
-            implementation(libs.androidx.activity.compose)
-            // implementation(libs.androidx.ui.tooling.preview.android) // Bisa dihapus jika compose.preview cukup
-            // Tambahkan dependensi Android lain jika perlu
-            implementation(libs.androidx.core.splashscreen) // Contoh jika pakai API Splash Android
-            implementation(libs.androidx.lifecycle.viewmodel.compose) // ViewModel Compose
-            implementation("androidx.compose.material3:material3-window-size-class:1.3.2") // Gunakan versi terbaru jika ada
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(libs.kotlinx.coroutines.swing) // Atau coroutine engine lain
+            }
         }
-        commonMain.dependencies {
-            // Compose UI Basics
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            //implementation(compose.material) // Material 2
-            implementation(compose.ui)
-            implementation(compose.material3) // Jika pakai Material 3
-            implementation(compose.components.resources) // Untuk resource KMP
-            implementation(compose.materialIconsExtended) // Untuk
 
-
-            // Preview Multiplatform (Gunakan alias yang benar dari TOML)
-            implementation(libs.ui.tooling.preview.desktop)
-            // Lifecycle ViewModel KMP (Hati-hati di Desktop, mungkin perlu MOKO atau Decompose state)
-            // implementation(libs.androidx.lifecycle.viewmodel)
-
-            // Supabase (Pastikan alias merujuk ke library yang benar: jan-tennert atau jan)
-            // implementation(project.dependencies.platform("io.github.jan-tennert.supabase:bom:3.1.1")) // Contoh BOM Jan Tennert
-            implementation(libs.supabase.auth.kt)
-            implementation(libs.supabase.postgrest.kt)
-            implementation(libs.supabase.realtime.kt)
-            implementation(libs.supabase.storage.kt)
-
-            // Ktor Client (Untuk Supabase atau network lain)
-            implementation(libs.ktor.client.okhttp) // Atau client engine lain
-
-            // Decompose
-            implementation(libs.decompose)
-            implementation(libs.decompose.extensions.compose) // Common compose extensions
-
-            // MVIKotlin (Jika Anda memilihnya nanti)
-            // implementation(libs.mvikotlin)
-            // implementation(libs.mvikotlin.extensions.coroutines)
-
-            // Logging
-            implementation(libs.napier) // Jika menggunakan Napier
-
-            // Essenty (jika ingin memperbaiki Parcelable)
-            // api(libs.essenty.parcelable)
-
-            // Hapus dependensi yang salah/tidak perlu dari sini:
-            // implementation(libs.androidx.ui) // Ini biasanya tidak perlu di commonMain
-            // implementation(libs.androidx.ui.tooling.preview) // Ini biasanya tidak perlu di commonMain
-            // implementation(libs.androidx.material3.v112) // Pilih Material 2 atau 3
-            // implementation(libs.ui.tooling.preview.desktop) // SALAH, jangan di commonMain
+        val androidMain by getting {
+            dependencies {
+                implementation(compose.preview)
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.androidx.core.splashscreen)
+                implementation(libs.androidx.lifecycle.viewmodel.compose)
+                implementation(libs.androidx.compose.material3.window.size) // Contoh alias
+            }
         }
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs) // Penting untuk Desktop
-            implementation(libs.kotlinx.coroutines.swing) // Coroutine Swing untuk Desktop
-            // Hapus dependensi preview desktop dari sini
+        val commonMain by getting {
+            dependencies {
+                // Compose
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.components.resources)
+                implementation(compose.materialIconsExtended)
 
+                // Supabase
+                implementation(libs.supabase.auth.kt)
+                implementation(libs.supabase.postgrest.kt)
+                implementation(libs.supabase.realtime.kt) // Uncomment jika pakai
+                implementation(libs.supabase.storage.kt) // Uncomment jika pakai
+
+                // Ktor Client
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.okhttp)
+
+                // Decompose
+                implementation(libs.decompose)
+                implementation(libs.decompose.extensions.compose)
+
+                // Logging
+                implementation(libs.napier)
+
+                // Serialization runtime
+                implementation(libs.kotlinx.serialization.json)
+
+                // Coroutines
+                implementation(libs.kotlinx.coroutines.core)
+
+                //dekstop tooling
+                implementation(libs.ui.tooling.preview.desktop)
+            }
         }
     }
 }
 
 android {
-    namespace = "com.mnb.manobacademy"
+    namespace = "com.mnb.manobacademy" // <<< Pastikan ini benar
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -100,6 +113,9 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
     }
     packaging {
         resources {
@@ -110,38 +126,37 @@ android {
         getByName("release") {
             isMinifyEnabled = false
         }
+        getByName("debug") {
+            // Opsi debug
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    // Aktifkan buildFeatures untuk Compose jika belum
     buildFeatures {
         compose = true
+        buildConfig = true
     }
-    // Compose options (biasanya diatur oleh plugin composeMultiplatform)
-    // composeOptions {
-    //     kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    // }
-
-    // Definisikan sourceSets untuk resources jika belum ada
+    // Pengaturan Compose Compiler Extension
+    composeOptions {
+        // Pastikan alias 'compose.compiler' ada di libs.versions.toml bagian [versions]
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get() // <<< Baris ini sudah benar
+    }
     sourceSets["main"].apply {
-        res.srcDirs("src/androidMain/res") // Resource khusus Android
-        resources.srcDirs("src/commonMain/resources") // Resource bersama
+        res.srcDirs("src/androidMain/res")
+        resources.srcDirs("src/commonMain/resources")
+    }
+
+    // Dependensi spesifik Android
+    dependencies {
+        debugImplementation(libs.androidx.ui.tooling)
     }
 }
-dependencies {
-    debugImplementation(libs.androidx.ui.tooling)
-}
-
-// HAPUS BLOK DEPENDENCIES INI DARI composeApp/build.gradle.kts
-// dependencies {
-//     debugImplementation(compose.uiTooling) // Pindahkan ke androidMain jika perlu
-// }
 
 compose.desktop {
     application {
-        mainClass = "com.mnb.manobacademy.MainKt" // Pastikan package benar
+        mainClass = "com.mnb.manobacademy.MainKt" // Pastikan package dan nama file benar
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

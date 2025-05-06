@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 // Import baru untuk unit Dp
 import androidx.compose.ui.unit.dp
-import com.mnb.manobacademy.features.auth.ui.components.OtpInputFields
+import com.mnb.manobacademy.features.auth.component.OtpInputFields
 // Pastikan import PrimaryActionButton benar
 import com.mnb.manobacademy.ui.components.PrimaryActionButton
 import com.mnb.manobacademy.ui.theme.dimens // <- Import helper dimens

@@ -1,6 +1,5 @@
 package com.mnb.manobacademy.ui.theme // <- Sesuaikan package Anda
 
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -13,43 +12,43 @@ import androidx.compose.ui.unit.dp
 // Nilai default ini akan kita gunakan sebagai titik awal untuk MediumDimens
 data class Dimensions(
     // Padding
-    val paddingSmall: Dp = 8.dp,      // M3: Umumnya 8dp untuk padding kecil/sedang
-    val paddingMedium: Dp = 16.dp,     // M3: Umumnya 16dp untuk padding standar
-    val paddingLarge: Dp = 24.dp,     // M3: Umumnya 24dp untuk padding besar
-    val paddingExtraLarge: Dp = 32.dp, // M3: Skala berikutnya
-    val paddingHuge: Dp = 40.dp,      // M3: Skala berikutnya
+    val paddingSmall: Dp = 8.dp,
+    val paddingMedium: Dp = 16.dp,
+    val paddingLarge: Dp = 24.dp,
+    val paddingExtraLarge: Dp = 32.dp,
+    val paddingHuge: Dp = 40.dp,
 
     // Spacing (Jarak antar elemen)
-    val spacingSmall: Dp = 4.dp,       // M3: Spasi terkecil
-    val spacingMedium: Dp = 8.dp,      // M3: Spasi umum
-    val spacingLarge: Dp = 16.dp,     // M3: Spasi lebih besar
-    val spacingExtraLarge: Dp = 24.dp, // M3: Spasi besar
-    val spacingHuge: Dp = 32.dp,      // M3: Skala berikutnya
-    val spacingMassive: Dp = 48.dp,    // M3: Skala berikutnya
-    val spacingGiant: Dp = 64.dp,     // M3: Skala berikutnya
+    val spacingSmall: Dp = 4.dp,
+    val spacingMedium: Dp = 8.dp,
+    val spacingLarge: Dp = 16.dp,
+    val spacingExtraLarge: Dp = 24.dp,
+    val spacingHuge: Dp = 32.dp,
+    val spacingMassive: Dp = 48.dp,
+    val spacingGiant: Dp = 64.dp,
 
     // Ukuran Logo (Subjektif, sesuaikan sesuai desain)
     val logoSizeSmall: Dp = 100.dp,
     val logoSizeLarge: Dp = 120.dp,
 
     // Tombol & Elemen Sosial
-    val buttonHeight: Dp = 48.dp,         // M3: Tinggi umum untuk tombol (memenuhi target sentuh)
-    val socialButtonSize: Dp = 48.dp,     // M3: Pastikan ukuran target sentuh minimal 48x48
-    val socialIconSize: Dp = 24.dp,     // M3: Ukuran ikon standar
-    val socialButtonSpacing: Dp = 12.dp,  // M3: Spasi antar tombol sosial
-    val socialButtonShapeRadius: Dp = 24.dp, // M3: Radius penuh untuk tombol lingkaran
+    val buttonHeight: Dp = 48.dp,
+    val socialButtonSize: Dp = 48.dp,
+    val socialIconSize: Dp = 24.dp,
+    val socialButtonSpacing: Dp = 12.dp,
+    val socialButtonShapeRadius: Dp = 8.dp, // DISET ke 8.dp (sedikit radius)
 
     // Radius Sudut
-    val textFieldCornerRadius: Dp = 12.dp, // M3: Radius umum untuk text field (Large)
-    val primaryButtonCornerRadius: Dp = 24.dp, // M3: Radius penuh untuk tombol (setengah tinggi)
+    val textFieldCornerRadius: Dp = 4.dp, // DISET ke 4.dp (sedikit radius)
+    val primaryButtonCornerRadius: Dp = 8.dp, // DISET ke 8.dp (sedikit radius)
 
     // Lain-lain
-    val dividerThickness: Dp = 1.dp,      // M3: Standar
-    val desktopFormMaxWidth: Dp = 450.dp, // Spesifik aplikasi
-    val topSpacingMobile: Dp = 64.dp,     // Sesuaikan sesuai kebutuhan layout mobile
-    val topSpacingDesktop: Dp = 40.dp,    // Sesuaikan sesuai kebutuhan layout desktop
-    val bottomRowPaddingVertical: Dp = 16.dp, // Padding bawah umum
-    val formInternalPaddingVertical: Dp = 16.dp, // Padding dalam form
+    val dividerThickness: Dp = 1.dp,
+    val desktopFormMaxWidth: Dp = 450.dp,
+    val topSpacingMobile: Dp = 64.dp,
+    val topSpacingDesktop: Dp = 40.dp,
+    val bottomRowPaddingVertical: Dp = 16.dp,
+    val formInternalPaddingVertical: Dp = 16.dp,
 
     // Splash Screen (Subjektif)
     val splashLogoSize: Dp = 200.dp,
@@ -58,10 +57,10 @@ data class Dimensions(
     val illustrationSizeMedium: Dp = 140.dp,
     val illustrationSizeLarge: Dp = 160.dp,
     val selectionCardPadding: Dp = 16.dp,
-    val selectionCardIconSize: Dp = 40.dp, // Ukuran ikon dalam kartu
-    val selectionCardIconPadding: Dp = 12.dp, // Padding ikon dalam kartu
-    val selectionCardCornerRadius: Dp = 16.dp, // M3: Radius Large untuk kartu
-    val selectionCardSpacing: Dp = 16.dp, // Jarak antar kartu
+    val selectionCardIconSize: Dp = 40.dp,
+    val selectionCardIconPadding: Dp = 12.dp,
+    val selectionCardCornerRadius: Dp = 8.dp, // TETAP (tidak diubah sesuai permintaan)
+    val selectionCardSpacing: Dp = 16.dp,
 
     // Guide Screen Dimensions (Sesuaikan dengan layout)
     val guideLogoSize: Dp = 120.dp,
@@ -76,7 +75,7 @@ data class Dimensions(
 
 // Compact: Layar ponsel kecil (0-599dp)
 val CompactDimens = Dimensions(
-    paddingSmall = 4.dp, // Lebih rapat
+    paddingSmall = 4.dp,
     paddingMedium = 8.dp,
     paddingLarge = 16.dp,
     paddingExtraLarge = 20.dp,
@@ -84,7 +83,7 @@ val CompactDimens = Dimensions(
 
     spacingSmall = 4.dp,
     spacingMedium = 8.dp,
-    spacingLarge = 12.dp, // Lebih rapat
+    spacingLarge = 12.dp,
     spacingExtraLarge = 16.dp,
     spacingHuge = 24.dp,
     spacingMassive = 32.dp,
@@ -93,29 +92,29 @@ val CompactDimens = Dimensions(
     logoSizeSmall = 80.dp,
     logoSizeLarge = 100.dp,
 
-    buttonHeight = 48.dp, // Tetap 48dp untuk target sentuh
+    buttonHeight = 48.dp,
     socialButtonSize = 40.dp, // Ukuran visual bisa lebih kecil, tapi pastikan area sentuh 48dp
     socialIconSize = 20.dp,
     socialButtonSpacing = 8.dp,
-    socialButtonShapeRadius = 20.dp, // Radius penuh (setengah ukuran visual)
+    socialButtonShapeRadius = 8.dp, // DISET ke 8.dp (konsisten)
 
-    textFieldCornerRadius = 8.dp, // M3: Radius Small
-    primaryButtonCornerRadius = 24.dp, // M3: Radius penuh (setengah tinggi)
+    textFieldCornerRadius = 4.dp, // DISET ke 4.dp (konsisten)
+    primaryButtonCornerRadius = 8.dp, // DISET ke 8.dp (konsisten)
 
     dividerThickness = 1.dp,
-    desktopFormMaxWidth = 400.dp, // Tidak relevan di compact, tapi set
-    topSpacingMobile = 48.dp, // Lebih rapat
+    desktopFormMaxWidth = 400.dp,
+    topSpacingMobile = 48.dp,
     topSpacingDesktop = 24.dp, // Tidak relevan di compact
-    bottomRowPaddingVertical = 12.dp, // Lebih rapat (sesuaikan user code)
-    formInternalPaddingVertical = 12.dp, // Lebih rapat
+    bottomRowPaddingVertical = 12.dp,
+    formInternalPaddingVertical = 12.dp,
 
     splashLogoSize = 180.dp,
     illustrationSizeMedium = 120.dp,
-    illustrationSizeLarge = 140.dp, // Sesuaikan user code
+    illustrationSizeLarge = 140.dp,
     selectionCardPadding = 12.dp,
     selectionCardIconSize = 36.dp,
     selectionCardIconPadding = 8.dp,
-    selectionCardCornerRadius = 12.dp, // M3: Radius Medium
+    selectionCardCornerRadius = 8.dp, // TETAP (tidak diubah sesuai permintaan)
     selectionCardSpacing = 12.dp,
 
     guideLogoSize = 100.dp,
@@ -127,18 +126,18 @@ val CompactDimens = Dimensions(
 )
 
 // Medium: Tablet portrait kecil, ponsel landscape (600-839dp)
-// Menggunakan nilai default dari data class Dimensions yang sudah disesuaikan M3
+// Menggunakan nilai default dari data class Dimensions yang sudah disesuaikan
 val MediumDimens = Dimensions()
 
 // Expanded: Tablet landscape, desktop (840dp+)
 val ExpandedDimens = Dimensions(
-    paddingSmall = 12.dp, // Lebih lega
+    paddingSmall = 12.dp,
     paddingMedium = 24.dp,
     paddingLarge = 32.dp,
     paddingExtraLarge = 40.dp,
     paddingHuge = 48.dp,
 
-    spacingSmall = 8.dp, // Sedikit lebih lega
+    spacingSmall = 8.dp,
     spacingMedium = 12.dp,
     spacingLarge = 20.dp,
     spacingExtraLarge = 32.dp,
@@ -153,28 +152,28 @@ val ExpandedDimens = Dimensions(
     socialButtonSize = 56.dp, // Lebih besar
     socialIconSize = 28.dp, // Sedikit lebih besar
     socialButtonSpacing = 16.dp,
-    socialButtonShapeRadius = 28.dp, // Radius penuh
+    socialButtonShapeRadius = 8.dp, // DISET ke 8.dp (konsisten)
 
-    textFieldCornerRadius = 16.dp, // M3: Radius Large
-    primaryButtonCornerRadius = 28.dp, // M3: Radius penuh
+    textFieldCornerRadius = 4.dp, // DISET ke 4.dp (konsisten)
+    primaryButtonCornerRadius = 8.dp, // DISET ke 8.dp (konsisten)
 
     dividerThickness = 1.dp,
-    desktopFormMaxWidth = 500.dp, // Lebih lebar untuk desktop/tablet besar
+    desktopFormMaxWidth = 500.dp,
     topSpacingMobile = 80.dp, // Tidak relevan
-    topSpacingDesktop = 56.dp, // Lebih lega
-    bottomRowPaddingVertical = 24.dp, // Lebih lega (sesuaikan user code)
-    formInternalPaddingVertical = 24.dp, // Lebih lega
+    topSpacingDesktop = 56.dp,
+    bottomRowPaddingVertical = 24.dp,
+    formInternalPaddingVertical = 24.dp,
 
     splashLogoSize = 250.dp,
-    illustrationSizeMedium = 140.dp, // Sesuaikan user code
-    illustrationSizeLarge = 180.dp, // Sesuaikan user code
+    illustrationSizeMedium = 140.dp,
+    illustrationSizeLarge = 180.dp,
     selectionCardPadding = 20.dp,
     selectionCardIconSize = 48.dp,
     selectionCardIconPadding = 16.dp,
-    selectionCardCornerRadius = 20.dp, // Radius lebih besar
+    selectionCardCornerRadius = 12.dp, // TETAP (tidak diubah sesuai permintaan, mengikuti nilai Expanded sebelumnya)
     selectionCardSpacing = 20.dp,
 
-    guideLogoSize = 100.dp,
+    guideLogoSize = 100.dp, // Tetap sama dari Medium (default), bisa disesuaikan jika perlu
     guideIndicatorWidth = 32.dp,
     guideIndicatorHeight = 5.dp,
     guideIndicatorSpacing = 10.dp,
@@ -187,7 +186,7 @@ val ExpandedDimens = Dimensions(
  * CompositionLocal untuk menyediakan instance Dimensions ke seluruh pohon Composable.
  * Defaultnya menggunakan MediumDimens, akan di-override berdasarkan WindowSizeClass.
  */
-val LocalDimens = compositionLocalOf { MediumDimens }
+val LocalDimens = compositionLocalOf { MediumDimens } // Defaultnya sekarang MediumDimens dengan corner radius yang sedikit
 
 /**
  * Properti helper untuk mengakses Dimensions saat ini dari CompositionLocal.
@@ -197,4 +196,3 @@ val AppDimens: Dimensions
     @Composable
     @ReadOnlyComposable
     get() = LocalDimens.current
-

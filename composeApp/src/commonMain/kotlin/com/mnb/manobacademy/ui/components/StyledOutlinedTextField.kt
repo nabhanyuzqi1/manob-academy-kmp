@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui.components // <- Sesuaikan dengan package Anda
+package com.mnb.manobacademy.ui.components // <- Sesuaikan dengan package Anda
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -9,22 +9,23 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-// import androidx.compose.ui.graphics.Color // Hapus jika tidak ada lagi warna hardcoded
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
+// Hapus import dp jika tidak digunakan lagi secara eksplisit
+// import androidx.compose.ui.unit.dp
+import com.mnb.manobacademy.ui.theme.dimens // Import AppDimens untuk akses mudah
 
-// Radius sudut default yang bisa digunakan di file ini saja
-private val DefaultTextFieldCornerRadius = 30.dp
+// Hapus variabel DefaultTextFieldCornerRadius yang salah didefinisikan
+// private val DefaultTextFieldCornerRadius = MaterialTheme.dimens
 
 /**
  * Composable kustom yang membungkus OutlinedTextField dengan gaya spesifik:
- * - Sudut bulat (30.dp secara default).
+ * - Sudut bulat (mengambil dari AppDimens.current.textFieldCornerRadius secara default).
  * - Menggunakan warna border, label, ikon, kursor, dan container dari MaterialTheme.
  * - Biasanya single line.
  *
  * Dapat digunakan kembali di seluruh aplikasi untuk tampilan text field yang konsisten.
- * PENTING: Harus digunakan di dalam lingkup `AppTheme`.
+ * PENTING: Harus digunakan di dalam lingkup `AppTheme` yang menyediakan `LocalDimens`.
  *
  * @param value Teks yang akan ditampilkan.
  * @param onValueChange Lambda yang dipanggil saat nilai berubah.
@@ -40,7 +41,7 @@ private val DefaultTextFieldCornerRadius = 30.dp
  * @param keyboardOptions Opsi konfigurasi software keyboard.
  * @param keyboardActions Aksi yang dilakukan saat tombol aksi IME ditekan.
  * @param singleLine Jika true, input akan menjadi satu baris horizontal.
- * @param shape Bentuk outline text field. Default menggunakan RoundedCornerShape.
+ * @param shape Bentuk outline text field. Default menggunakan RoundedCornerShape dengan radius dari AppDimens.
  * @param colors Warna yang digunakan untuk text field dalam status berbeda. Default menggunakan konfigurasi warna dari tema.
  */
 @Composable
@@ -59,7 +60,8 @@ fun StyledOutlinedTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = true,
-    shape: Shape = RoundedCornerShape(DefaultTextFieldCornerRadius),
+    // Ambil nilai corner radius langsung dari AppDimens saat composable dijalankan
+    shape: Shape = RoundedCornerShape(MaterialTheme.dimens.textFieldCornerRadius),
     // Gunakan warna dari MaterialTheme.colorScheme
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors(
         // Warna Border: Gunakan outline/outlineVariant dari tema
@@ -121,7 +123,7 @@ fun StyledOutlinedTextField(
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
         singleLine = singleLine,
-        shape = shape,
+        shape = shape, // Teruskan shape yang sudah benar
         colors = colors // Teruskan colors yang sudah dikonfigurasi
     )
 }

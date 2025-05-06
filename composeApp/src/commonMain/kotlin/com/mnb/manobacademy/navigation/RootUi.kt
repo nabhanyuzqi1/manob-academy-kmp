@@ -56,9 +56,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
                 )() // Panggil lambda Composable yang dikembalikan oleh shouldShowSplash
             }
             is RootComponent.Child.Login -> LoginScreen(
-                onNavigateToRegister = { component.navigation.push(ScreenConfig.Register) },
-                onForgotPasswordClick = { component.navigation.push(ScreenConfig.ForgotPassword) },
-                onLoginSuccess = { component.navigation.replaceAll(ScreenConfig.Home) }
+                component = child.component // <<< Ini sudah benar
             )
             is RootComponent.Child.Register -> RegistrationScreen(
                 onNavigateToLogin = { component.navigation.pop() },

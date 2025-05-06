@@ -1,6 +1,7 @@
 package com.mnb.manobacademy // Sesuaikan package
 
 import android.graphics.Color
+import android.util.Log
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -11,12 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.DefaultComponentContext // Import DefaultComponentContext
 import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimpor
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry // Import LifecycleRegistry
 // Import UI Screens
 import com.mnb.manobacademy.features.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
 import com.mnb.manobacademy.features.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
@@ -26,11 +24,11 @@ import com.mnb.manobacademy.features.auth.ui.SplashScreen
 import com.mnb.manobacademy.features.auth.ui.VerificationCodeScreen
 // Import Komponen (untuk dummy preview)
 import com.mnb.manobacademy.features.auth.component.ForgotPasswordComponent
+import com.mnb.manobacademy.features.auth.component.LoginComponent
 import com.mnb.manobacademy.features.auth.component.ResetMethod
 // Import Navigation & App
 import com.mnb.manobacademy.navigation.DefaultRootComponent
 // import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()
-import com.mnb.manobacademy.App // Import App Composable
 // Import Tema
 import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
 import kotlinx.coroutines.delay
@@ -58,12 +56,22 @@ class MainActivity : ComponentActivity() {
         val root = DefaultRootComponent(defaultComponentContext()) // <<< Panggil defaultComponentContext()
 
         WindowCompat.setDecorFitsSystemWindows(window, false) // <<< Add this line
-
-        setContent {
-            App(root = root)
+        try {
+            setContent {
+                App(root = root)
+            }
+        } catch (e: Throwable) {
+            // Tangani semua jenis pengecualian yang mungkin terjadi
+            Log.e("MainActivity", "Fatal exception in setContent", e)
+            // Tampilkan pesan error ke user atau lakukan fallback lain
+            // Contoh:
+            // Toast.makeText(this, "A fatal error occurred", Toast.LENGTH_LONG).show()
+            // atau
+            // showDialog("A fatal error occurred", "Please restart the app or contact support.")
+            // Akhirnya, exit() aplikasinya
+            finish()
         }
     }
-
 }
 
 
@@ -77,15 +85,24 @@ fun AppAndroidPreview() {
     }
 }
 
+// --- Preview untuk LoginScreen yang Diperbaiki ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     AppTheme {
-        LoginScreen(
-            onNavigateToRegister = {},
-            onLoginSuccess = {},
-            onForgotPasswordClick = {}
-        )
+        // Buat dummy LoginComponent untuk preview
+        val dummyLoginComponent = object : LoginComponent {
+            override val state: Value<LoginComponent.State> =
+                MutableValue(LoginComponent.State()) // State awal default
+
+            override fun onEmailChanged(text: String) {}
+            override fun onPasswordChanged(text: String) {}
+            override fun onLoginClicked() {}
+            override fun onRegisterClicked() {}
+            override fun onForgotPasswordClicked() {}
+        }
+        // Panggil LoginScreen dengan dummy component
+        LoginScreen(component = dummyLoginComponent)
     }
 }
 

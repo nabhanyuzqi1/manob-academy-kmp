@@ -13,24 +13,24 @@ import androidx.compose.material3.* // Wildcard import ok
 import androidx.compose.runtime.* // Wildcard import ok
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-// HAPUS: import androidx.compose.ui.platform.LocalConfiguration (jika ada)
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-// Import baru untuk unit Dp
 import androidx.compose.ui.unit.dp
+// Import Decompose state handling
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.mnb.manobacademy.features.auth.component.GoogleFacebookLoginRow
+// Import Komponen Decompose
+import com.mnb.manobacademy.features.auth.component.LoginComponent // <<< IMPORT LoginComponent
 // Import Utilitas Platform & Resource Anda
-import com.mnb.manobacademy.util.PlatformType // Sesuaikan path jika perlu
-import com.mnb.manobacademy.util.currentPlatform // Sesuaikan path jika perlu
-// Import fungsi expect untuk tinggi layar
-import com.mnb.manobacademy.getScreenHeightDp
-import manobacademykmp.composeapp.generated.resources.Res // Sesuaikan path jika perlu
-import manobacademykmp.composeapp.generated.resources.logo_manob_academy_notext // Sesuaikan path jika perlu
+import com.mnb.manobacademy.util.PlatformType
+import com.mnb.manobacademy.util.currentPlatform
+import com.mnb.manobacademy.getScreenHeightDp // Fungsi expect untuk tinggi layar
+import manobacademykmp.composeapp.generated.resources.Res
+import manobacademykmp.composeapp.generated.resources.logo_manob_academy_notext
 import org.jetbrains.compose.resources.painterResource
-
-// Import Composable Kustom yang Telah Dipisah
-import com.mnb.manobacademy.features.auth.ui.components.StyledOutlinedTextField // <- PASTIKAN PATH INI BENAR
-import com.mnb.manobacademy.features.auth.ui.components.GoogleFacebookLoginRow // <- IMPORT KOMPONEN BARU
 import com.mnb.manobacademy.ui.components.PrimaryActionButton
+import com.mnb.manobacademy.ui.components.StyledOutlinedTextField
 import com.mnb.manobacademy.ui.theme.dimens // Import helper dimens
 // Import String Resources
 import manobacademykmp.composeapp.generated.resources.*
@@ -39,24 +39,19 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Composable utama untuk layar Login.
+ * Menggunakan state dan logic dari LoginComponent.
  * Menangani logika tampilan antara Desktop dan Mobile.
  *
- * @param onNavigateToRegister Lambda untuk navigasi ke layar registrasi.
- * @param onLoginSuccess Lambda yang dipanggil saat login berhasil.
- * @param onForgotPasswordClick Lambda untuk navigasi ke layar lupa kata sandi.
+ * @param component Instance dari LoginComponent.
  */
 @Composable
 fun LoginScreen(
-    onNavigateToRegister: () -> Unit,
-    onLoginSuccess: () -> Unit,
-    onForgotPasswordClick: () -> Unit
+    component: LoginComponent // Terima LoginComponent sebagai parameter
 ) {
     // Mengambil dimensi dari tema Material
     val dimens = MaterialTheme.dimens
-
-    // State untuk field email dan password
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    // Mengambil state dari komponen dan mengobservasinya
+    val state by component.state.subscribeAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -66,24 +61,22 @@ fun LoginScreen(
         if (currentPlatform == PlatformType.DESKTOP) {
             // --- Layout Desktop ---
             DesktopLoginLayout(
-                email = email,
-                password = password,
-                onEmailChange = { email = it },
-                onPasswordChange = { password = it },
-                onLoginSuccess = onLoginSuccess,
-                onNavigateToRegister = onNavigateToRegister,
-                onForgotPasswordClick = onForgotPasswordClick
+                state = state, // Teruskan state
+                onEmailChange = component::onEmailChanged, // Teruskan fungsi komponen
+                onPasswordChange = component::onPasswordChanged, // Teruskan fungsi komponen
+                onLoginClick = component::onLoginClicked, // Teruskan fungsi komponen
+                onNavigateToRegister = component::onRegisterClicked, // Teruskan fungsi komponen
+                onForgotPasswordClick = component::onForgotPasswordClicked // Teruskan fungsi komponen
             )
         } else {
             // --- Layout Mobile ---
             MobileLoginLayout(
-                email = email,
-                password = password,
-                onEmailChange = { email = it },
-                onPasswordChange = { password = it },
-                onLoginSuccess = onLoginSuccess,
-                onNavigateToRegister = onNavigateToRegister,
-                onForgotPasswordClick = onForgotPasswordClick
+                state = state, // Teruskan state
+                onEmailChange = component::onEmailChanged, // Teruskan fungsi komponen
+                onPasswordChange = component::onPasswordChanged, // Teruskan fungsi komponen
+                onLoginClick = component::onLoginClicked, // Teruskan fungsi komponen
+                onNavigateToRegister = component::onRegisterClicked, // Teruskan fungsi komponen
+                onForgotPasswordClick = component::onForgotPasswordClicked // Teruskan fungsi komponen
             )
         }
     }
@@ -91,14 +84,14 @@ fun LoginScreen(
 
 /**
  * Composable untuk layout Login di platform Desktop.
+ * Menerima state dan fungsi dari LoginComponent.
  */
 @Composable
 private fun DesktopLoginLayout(
-    email: String,
-    password: String,
+    state: LoginComponent.State, // Terima state
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onLoginSuccess: () -> Unit,
+    onLoginClick: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
@@ -134,10 +127,9 @@ private fun DesktopLoginLayout(
             Spacer(modifier = Modifier.height(dimens.spacingExtraLarge))
 
             // --- BAGIAN 2: TENGAH (Form Fields) ---
-            // Gunakan weight untuk mengisi ruang vertikal yang tersisa
             Column(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f) // Mengisi ruang vertikal
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center, // Pusatkan form secara vertikal
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -154,17 +146,21 @@ private fun DesktopLoginLayout(
                 ){
                     // Memanggil composable terpisah untuk field form
                     LoginFormFields(
-                        emailValue = email,
-                        passwordValue = password,
+                        state = state, // Teruskan state
                         onEmailChange = onEmailChange,
                         onPasswordChange = onPasswordChange,
-                        onLoginClick = onLoginSuccess,
+                        onLoginClick = onLoginClick,
                         onForgotPasswordClick = onForgotPasswordClick
                     )
                 }
             }
 
-            // --- BAGIAN 3: BAWAH (Link Sign Up) ---
+            // --- BAGIAN 3: BAWAH (Link Sign Up & Loading) ---
+            // Tampilkan loading indicator jika sedang loading
+            if (state.isLoading) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingLarge))
+                Spacer(modifier = Modifier.height(dimens.spacingMedium))
+            }
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -179,6 +175,7 @@ private fun DesktopLoginLayout(
                     text = stringResource(Res.string.login_signup_prompt),
                     color = MaterialTheme.colorScheme.onBackground
                 )
+                // Gunakan onNavigateToRegister dari parameter (yang berasal dari component.onRegisterClicked)
                 TextButton(onClick = onNavigateToRegister) {
                     Text(
                         text = stringResource(Res.string.login_signup_link),
@@ -193,15 +190,15 @@ private fun DesktopLoginLayout(
 
 /**
  * Composable untuk layout Login di platform Mobile.
+ * Menerima state dan fungsi dari LoginComponent.
  * Menggunakan getScreenHeightDp() untuk menyesuaikan spasi atas pada layar tinggi.
  */
 @Composable
 private fun MobileLoginLayout(
-    email: String,
-    password: String,
+    state: LoginComponent.State, // Terima state
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
-    onLoginSuccess: () -> Unit,
+    onLoginClick: () -> Unit,
     onNavigateToRegister: () -> Unit,
     onForgotPasswordClick: () -> Unit
 ) {
@@ -233,7 +230,7 @@ private fun MobileLoginLayout(
         Spacer(modifier = Modifier.height(dimens.spacingMedium))
         Text(
             stringResource(Res.string.login_header_title),
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold
         )
         Text(
             stringResource(Res.string.login_header_subtitle),
@@ -256,22 +253,26 @@ private fun MobileLoginLayout(
         ) {
             // Memanggil composable terpisah untuk field form
             LoginFormFields(
-                emailValue = email,
-                passwordValue = password,
+                state = state, // Teruskan state
                 onEmailChange = onEmailChange,
                 onPasswordChange = onPasswordChange,
-                onLoginClick = onLoginSuccess,
+                onLoginClick = onLoginClick,
                 onForgotPasswordClick = onForgotPasswordClick
             )
         }
 
-        // --- BAGIAN 3: BAWAH (Link Sign Up) ---
+        // --- BAGIAN 3: BAWAH (Link Sign Up & Loading) ---
+        // Tampilkan loading indicator jika sedang loading
+        if (state.isLoading) {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingLarge))
+            Spacer(modifier = Modifier.height(dimens.spacingMedium))
+        }
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
+                .navigationBarsPadding() // Padding untuk navigation bar
                 .padding(
                     horizontal = dimens.paddingLarge,
                     vertical = dimens.bottomRowPaddingVertical // Padding vertikal di bagian bawah
@@ -281,6 +282,7 @@ private fun MobileLoginLayout(
                 text = stringResource(Res.string.login_signup_prompt),
                 color = MaterialTheme.colorScheme.onBackground
             )
+            // Gunakan onNavigateToRegister dari parameter (yang berasal dari component.onRegisterClicked)
             TextButton(onClick = onNavigateToRegister) {
                 Text(
                     text = stringResource(Res.string.login_signup_link),
@@ -294,12 +296,11 @@ private fun MobileLoginLayout(
 
 /**
  * Composable terpisah untuk menampilkan field input form login,
- * tombol aksi, dan opsi login sosial.
+ * tombol aksi, dan opsi login sosial. Menerima state dari LoginComponent.
  */
 @Composable
 private fun LoginFormFields(
-    emailValue: String,
-    passwordValue: String,
+    state: LoginComponent.State, // Terima state
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
@@ -307,28 +308,40 @@ private fun LoginFormFields(
 ) {
     val dimens = MaterialTheme.dimens
 
+    // Tampilkan pesan error jika ada
+    if (state.error != null) {
+        Text(
+            text = state.error,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(bottom = dimens.spacingMedium)
+        )
+    }
+
     // Field Email
     StyledOutlinedTextField(
-        value = emailValue,
-        onValueChange = onEmailChange,
+        value = state.email, // Gunakan state.email
+        onValueChange = onEmailChange, // Gunakan fungsi dari parameter
         label = { Text(stringResource(Res.string.login_email_label)) },
         leadingIcon = { Icon(Icons.Filled.Email, stringResource(Res.string.login_email_icon_desc), tint = MaterialTheme.colorScheme.onSurfaceVariant) },
         modifier = Modifier.fillMaxWidth(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        singleLine = true
+        singleLine = true,
+        isError = state.error != null // Tandai error jika ada pesan error
     )
     Spacer(modifier = Modifier.height(dimens.spacingLarge))
 
     // Field Password
     StyledOutlinedTextField(
-        value = passwordValue,
-        onValueChange = onPasswordChange,
+        value = state.password, // Gunakan state.password
+        onValueChange = onPasswordChange, // Gunakan fungsi dari parameter
         label = { Text(stringResource(Res.string.login_password_label)) },
         leadingIcon = { Icon(Icons.Filled.Lock, stringResource(Res.string.login_password_icon_desc), tint = MaterialTheme.colorScheme.onSurfaceVariant) },
         visualTransformation = PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
-        singleLine = true
+        singleLine = true,
+        isError = state.error != null // Tandai error jika ada pesan error
     )
 
     // Tombol Lupa Kata Sandi
@@ -336,6 +349,7 @@ private fun LoginFormFields(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End // Rata kanan
     ) {
+        // Gunakan onForgotPasswordClick dari parameter
         TextButton(onClick = onForgotPasswordClick) {
             Text(
                 stringResource(Res.string.login_forgot_password),
@@ -349,7 +363,8 @@ private fun LoginFormFields(
     // Tombol Login Utama
     PrimaryActionButton(
         text = stringResource(Res.string.login_button_signin),
-        onClick = onLoginClick,
+        onClick = onLoginClick, // Gunakan fungsi dari parameter
+        enabled = !state.isLoading, // Nonaktifkan tombol saat loading
         modifier = Modifier.fillMaxWidth() // Tombol mengisi lebar penuh
     )
 
@@ -385,8 +400,8 @@ private fun LoginFormFields(
     // Tombol Login Google & Facebook
     GoogleFacebookLoginRow(
         modifier = Modifier.fillMaxWidth(),
-        onGoogleClick = { /* TODO: Implement Google Login */ },
-        onFacebookClick = { /* TODO: Implement Facebook Login */ }
+        onGoogleClick = { /* TODO: Implement Google Login via Component */ },
+        onFacebookClick = { /* TODO: Implement Facebook Login via Component */ }
     )
 
     Spacer(modifier = Modifier.height(dimens.spacingLarge)) // Spasi tambahan di bawah

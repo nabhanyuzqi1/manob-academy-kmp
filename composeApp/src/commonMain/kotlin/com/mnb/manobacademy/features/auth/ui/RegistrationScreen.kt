@@ -22,14 +22,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.* // Wildcard import ok
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 // Import baru untuk unit Dp
 import androidx.compose.ui.unit.dp
 // Import Composable Kustom yang Telah Dipisah
-import com.mnb.manobacademy.features.auth.ui.components.GoogleFacebookLoginRow
-import com.mnb.manobacademy.features.auth.ui.components.StyledOutlinedTextField
+import com.mnb.manobacademy.features.auth.component.GoogleFacebookLoginRow
+import com.mnb.manobacademy.ui.components.StyledOutlinedTextField
 import com.mnb.manobacademy.ui.components.PrimaryActionButton
 // Import Tema & Utilitas
 import com.mnb.manobacademy.ui.theme.dimens // <- Import helper dimens
@@ -250,7 +251,7 @@ private fun MobileRegisterLayout(
         Spacer(modifier = Modifier.height(dimens.spacingSmall)) // Gunakan dimensi tema
         Text(
             stringResource(Res.string.register_title), // Gunakan string resource
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth().padding(horizontal = dimens.paddingHuge), // Gunakan dimensi tema
             textAlign = TextAlign.Center
         )

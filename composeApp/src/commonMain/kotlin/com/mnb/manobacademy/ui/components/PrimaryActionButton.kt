@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mnb.manobacademy.ui.theme.dimens
 
 /**
  * Composable modular untuk tombol aksi utama (seperti Sign In, Register, dll.).
@@ -27,9 +28,9 @@ fun PrimaryActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
         .fillMaxWidth()
-        .height(50.dp), // Ukuran default tombol
+        .height(MaterialTheme.dimens.buttonHeight), // Ukuran default tombol
     enabled: Boolean = true,
-    shape: RoundedCornerShape = RoundedCornerShape(50) // Bentuk default tombol
+    shape: RoundedCornerShape = RoundedCornerShape(MaterialTheme.dimens.primaryButtonCornerRadius) // Bentuk default tombol
 ) {
     Button(
         onClick = onClick,

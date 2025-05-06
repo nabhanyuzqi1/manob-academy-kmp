@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui.components // <- Sesuaikan dengan package komponen Anda
+package com.mnb.manobacademy.features.auth.component // <- Sesuaikan dengan package komponen Anda
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -14,8 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 // import androidx.compose.ui.graphics.Color // Hapus jika tidak ada lagi warna hardcoded
-import androidx.compose.ui.graphics.ColorFilter // Import untuk tint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -52,7 +52,7 @@ fun SocialLoginButton(
     iconSize: Dp = 24.dp,
     shape: Shape = RoundedCornerShape(20),
     // Gunakan warna dari tema sebagai default
-    containerColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surfaceVariant
+    containerColor: Color = MaterialTheme.colorScheme.surfaceVariant
 ) {
     Button(
         onClick = onClick,
