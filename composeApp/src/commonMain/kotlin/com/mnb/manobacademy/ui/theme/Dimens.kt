@@ -42,6 +42,20 @@ data class Dimensions(
     val textFieldCornerRadius: Dp = 4.dp, // DISET ke 4.dp (sedikit radius)
     val primaryButtonCornerRadius: Dp = 8.dp, // DISET ke 8.dp (sedikit radius)
 
+    // New Added Dimens
+    val cardCornerRadiusLarge: Dp = 16.dp,
+    val cardCornerRadiusMedium: Dp = 12.dp,
+    val cardElevation: Dp = 2.dp,
+    val searchBarHeight: Dp = 56.dp,
+    val categoryChipPaddingHorizontal: Dp = 12.dp,
+    val categoryChipPaddingVertical: Dp = 8.dp,
+    val favoriteClassImageHeight: Dp = 100.dp,
+    val classCardWidth: Dp = 180.dp,
+    val classCardImageHeight: Dp = 100.dp,
+    val instructorAvatarSize: Dp = 60.dp,
+    val bottomNavIconSize: Dp = 24.dp,
+
+
     // Lain-lain
     val dividerThickness: Dp = 1.dp,
     val desktopFormMaxWidth: Dp = 450.dp,
@@ -101,6 +115,19 @@ val CompactDimens = Dimensions(
     textFieldCornerRadius = 4.dp, // DISET ke 4.dp (konsisten)
     primaryButtonCornerRadius = 8.dp, // DISET ke 8.dp (konsisten)
 
+    // New Added Dimens
+    cardCornerRadiusLarge = 12.dp,
+    cardCornerRadiusMedium = 8.dp,
+    cardElevation = 1.dp,
+    searchBarHeight = 48.dp,
+    categoryChipPaddingHorizontal = 8.dp,
+    categoryChipPaddingVertical = 6.dp,
+    favoriteClassImageHeight = 80.dp,
+    classCardWidth = 150.dp,
+    classCardImageHeight = 80.dp,
+    instructorAvatarSize = 48.dp,
+    bottomNavIconSize = 20.dp,
+
     dividerThickness = 1.dp,
     desktopFormMaxWidth = 400.dp,
     topSpacingMobile = 48.dp,
@@ -157,6 +184,19 @@ val ExpandedDimens = Dimensions(
     textFieldCornerRadius = 4.dp, // DISET ke 4.dp (konsisten)
     primaryButtonCornerRadius = 8.dp, // DISET ke 8.dp (konsisten)
 
+    // New Added Dimens
+    cardCornerRadiusLarge = 20.dp,
+    cardCornerRadiusMedium = 16.dp,
+    cardElevation = 3.dp,
+    searchBarHeight = 64.dp,
+    categoryChipPaddingHorizontal = 16.dp,
+    categoryChipPaddingVertical = 10.dp,
+    favoriteClassImageHeight = 120.dp,
+    classCardWidth = 200.dp,
+    classCardImageHeight = 120.dp,
+    instructorAvatarSize = 72.dp,
+    bottomNavIconSize = 28.dp,
+
     dividerThickness = 1.dp,
     desktopFormMaxWidth = 500.dp,
     topSpacingMobile = 80.dp, // Tidak relevan
@@ -194,5 +234,5 @@ val LocalDimens = compositionLocalOf { MediumDimens } // Defaultnya sekarang Med
  */
 val AppDimens: Dimensions
     @Composable
-    @ReadOnlyComposable
+    @ReadOnlyComposable // Add this line
     get() = LocalDimens.current

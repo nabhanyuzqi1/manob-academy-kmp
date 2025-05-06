@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui // Atau package onboarding
+package com.mnb.manobacademy.views.auth.ui // Atau package onboarding
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mnb.manobacademy.ui.components.PrimaryActionButton // Ganti path jika perlu
 import com.mnb.manobacademy.ui.theme.dimens
-import com.mnb.manobacademy.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
+import com.mnb.manobacademy.util.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
 import manobacademykmp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -33,7 +33,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.ui.text.font.FontStyle // <<< Import FontStyle
 import androidx.compose.ui.text.font.FontWeight // <<< Import FontWeight (Compose version)
-import com.mnb.manobacademy.features.auth.store.onboardingPages
+import com.mnb.manobacademy.models.store.onboardingPages
 // Hapus import org.jetbrains.skia.FontWeight jika tidak digunakan di tempat lain
 
 /**

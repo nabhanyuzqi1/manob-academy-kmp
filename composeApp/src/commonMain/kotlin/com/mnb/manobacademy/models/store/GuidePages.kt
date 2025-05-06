@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.store // Atau package onboarding
+package com.mnb.manobacademy.models.store // Atau package onboarding
 
 import manobacademykmp.composeapp.generated.resources.Res
 import manobacademykmp.composeapp.generated.resources.bg_guide_1

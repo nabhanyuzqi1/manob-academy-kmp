@@ -9,18 +9,18 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.router.stack.replaceAll
-import com.mnb.manobacademy.features.auth.ui.ForgotPasswordScreen
-import com.mnb.manobacademy.features.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
-import com.mnb.manobacademy.features.auth.ui.LoginScreen
-import com.mnb.manobacademy.features.auth.ui.RegistrationScreen
-import com.mnb.manobacademy.features.auth.ui.VerificationCodeScreen
-import com.mnb.manobacademy.features.home.component.HomeComponent
 import com.mnb.manobacademy.features.home.ui.HomeScreen
+import com.mnb.manobacademy.views.auth.ui.ForgotPasswordScreen
+import com.mnb.manobacademy.views.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
+import com.mnb.manobacademy.views.auth.ui.LoginScreen
+import com.mnb.manobacademy.views.auth.ui.RegistrationScreen
+import com.mnb.manobacademy.views.auth.ui.VerificationCodeScreen
+import com.mnb.manobacademy.views.home.component.HomeComponent
 // Import utilitas platform
 import com.mnb.manobacademy.util.PlatformType
 import com.mnb.manobacademy.util.currentPlatform
 // Import fungsi expect
-import com.mnb.manobacademy.shouldShowSplash
+import com.mnb.manobacademy.util.shouldShowSplash
 
 @OptIn(DelicateDecomposeApi::class)
 @Composable

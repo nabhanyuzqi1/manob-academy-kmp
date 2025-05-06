@@ -15,6 +15,7 @@ plugins {
 
 // --- Baca local.properties ---
 val localProperties = Properties()
+// Akses file dari root project, bukan dari composeApp
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
     try {
@@ -23,13 +24,22 @@ if (localPropertiesFile.exists() && localPropertiesFile.isFile) {
         println("Warning: Could not load local.properties: ${e.message}")
     }
 } else {
-    println("Warning: local.properties not found in root project. Supabase credentials might be missing.")
+    println("Warning: local.properties not found in root project. Using default values.")
 }
-val supabaseUrl = localProperties.getProperty("supabase.url", "")
-val supabaseAnonKey = localProperties.getProperty("supabase.anon.key", "")
+
+// Ambil nilai atau gunakan default jika tidak ada
+val supabaseUrl = localProperties.getProperty("supabase.url", "") // Beri default kosong atau URL dev jika perlu
+val supabaseAnonKey = localProperties.getProperty("supabase.anon.key", "") // Beri default kosong atau key dev jika perlu
+// <<< BACA FLAG APP MODE >>>
+val appMode = localProperties.getProperty("app.mode", "PRODUCTION") // Default ke PRODUCTION jika tidak ada
+val isDevelopmentMode = appMode.equals("DEVELOPMENT", ignoreCase = true)
+// ---------------------------
+
+// Validasi sederhana (opsional tapi bagus)
 if (supabaseUrl.isBlank() || supabaseAnonKey.isBlank()) {
     println("Warning: Supabase URL or Key is missing in local.properties. Build might fail or app might not connect.")
 }
+println("Application Mode: $appMode (isDevelopmentMode: $isDevelopmentMode)") // Log mode
 // ---------------------------
 
 
@@ -71,7 +81,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.material3)
                 implementation(compose.components.resources)
-                implementation(compose.materialIconsExtended)
+                implementation(compose.materialIconsExtended) // Untuk ikon seperti ChatBubbleOutline
 
                 // Supabase
                 implementation(libs.supabase.auth.kt)
@@ -81,7 +91,7 @@ kotlin {
 
                 // Ktor Client
                 implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.okhttp)
+                implementation(libs.ktor.client.okhttp) // Engine umum untuk Android/JVM
 
                 // Decompose
                 implementation(libs.decompose)
@@ -95,9 +105,6 @@ kotlin {
 
                 // Coroutines
                 implementation(libs.kotlinx.coroutines.core)
-
-                //dekstop tooling
-                implementation(libs.ui.tooling.preview.desktop)
             }
         }
     }
@@ -114,8 +121,12 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // --- Tambahkan BuildConfig Fields ---
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
+        // <<< TAMBAHKAN BUILD CONFIG UNTUK MODE DEVELOPMENT >>>
+        buildConfigField("boolean", "IS_DEVELOPMENT_MODE", "$isDevelopmentMode")
+        // -----------------------------------------------
     }
     packaging {
         resources {
@@ -125,9 +136,13 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
+            // Anda bisa mendefinisikan BuildConfig field spesifik release di sini jika perlu
+            // buildConfigField("boolean", "IS_DEVELOPMENT_MODE", "false")
         }
         getByName("debug") {
             // Opsi debug
+            // Anda bisa mendefinisikan BuildConfig field spesifik debug di sini jika perlu
+            // buildConfigField("boolean", "IS_DEVELOPMENT_MODE", "true") // Atau ambil dari local.properties seperti di atas
         }
     }
     compileOptions {
@@ -136,12 +151,10 @@ android {
     }
     buildFeatures {
         compose = true
-        buildConfig = true
+        buildConfig = true // <<< PASTIKAN INI true
     }
-    // Pengaturan Compose Compiler Extension
     composeOptions {
-        // Pastikan alias 'compose.compiler' ada di libs.versions.toml bagian [versions]
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get() // <<< Baris ini sudah benar
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
     sourceSets["main"].apply {
         res.srcDirs("src/androidMain/res")

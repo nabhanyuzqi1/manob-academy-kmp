@@ -1,4 +1,4 @@
-package com.mnb.manobacademy
+package com.mnb.manobacademy.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration

@@ -72,4 +72,26 @@
 
     !!-- Home Screen Strings --!!
     <string name="home_logout_button">Keluar</string>
+    <string name="home_greeting">Hai, %1$s</string> <string name="home_search_placeholder">Cari kelas atau topik</string>
+    <string name="home_favorite_class_title">Kelas Favorit</string>
+    <string name="home_lectures">%1$d Kuliah</string>
+    <string name="home_enrolled">%1$d Terdaftar</string>
+    <string name="home_more">Lainnya ></string>
+    <string name="home_category_art">Seni</string>
+    <string name="home_category_photography">Fotografi</string>
+    <string name="home_category_design">Desain</string>
+    <string name="home_category_video">Video</string>
+    <string name="home_class_beginners">Kelas Pemula</string>
+    <string name="home_instructor_title">Instruktur</string>
+    <string name="home_view_all">Lihat Semua</string>
+    <string name="home_bottom_nav_home">Beranda</string>
+    <string name="home_bottom_nav_classes">Kelas</string>
+    <string name="home_bottom_nav_checkout">Checkout</string>
+    <string name="home_bottom_nav_dashboard">Dasbor</string>
+    <string name="home_bottom_nav_profile">Profil</string>
+    <string name="home_search_icon_desc">Ikon Cari</string>
+    <string name="home_class_icon_desc">Ikon Kelas</string>
+    <string name="home_instructor_avatar_desc">Avatar Instruktur</string>
+    <string name="home_rating_desc">Rating %1$.1f dari 5</string>
+
 </resources>

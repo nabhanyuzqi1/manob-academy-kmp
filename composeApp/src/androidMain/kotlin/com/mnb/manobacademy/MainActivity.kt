@@ -16,16 +16,16 @@ import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimp
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 // Import UI Screens
-import com.mnb.manobacademy.features.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
-import com.mnb.manobacademy.features.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
-import com.mnb.manobacademy.features.auth.ui.LoginScreen
-import com.mnb.manobacademy.features.auth.ui.RegistrationScreen
-import com.mnb.manobacademy.features.auth.ui.SplashScreen
-import com.mnb.manobacademy.features.auth.ui.VerificationCodeScreen
+import com.mnb.manobacademy.views.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
+import com.mnb.manobacademy.views.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
+import com.mnb.manobacademy.views.auth.ui.LoginScreen
+import com.mnb.manobacademy.views.auth.ui.RegistrationScreen
+import com.mnb.manobacademy.views.auth.ui.SplashScreen
+import com.mnb.manobacademy.views.auth.ui.VerificationCodeScreen
 // Import Komponen (untuk dummy preview)
-import com.mnb.manobacademy.features.auth.component.ForgotPasswordComponent
-import com.mnb.manobacademy.features.auth.component.LoginComponent
-import com.mnb.manobacademy.features.auth.component.ResetMethod
+import com.mnb.manobacademy.views.auth.component.ForgotPasswordComponent
+import com.mnb.manobacademy.views.auth.component.LoginComponent
+import com.mnb.manobacademy.views.auth.component.ResetMethod
 // Import Navigation & App
 import com.mnb.manobacademy.navigation.DefaultRootComponent
 // import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()

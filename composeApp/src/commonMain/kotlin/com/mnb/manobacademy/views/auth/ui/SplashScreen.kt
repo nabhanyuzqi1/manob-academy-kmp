@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui // Sesuaikan dengan package Anda
+package com.mnb.manobacademy.views.auth.ui // Sesuaikan dengan package Anda
 
 // Import Compose & Material Lengkap
 // import androidx.compose.desktop.ui.tooling.preview.Preview // Preview mungkin tidak relevan di KMP non-Android

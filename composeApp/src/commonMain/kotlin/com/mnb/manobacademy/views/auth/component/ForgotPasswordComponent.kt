@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.component // Sesuaikan package
+package com.mnb.manobacademy.views.auth.component // Sesuaikan package
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue

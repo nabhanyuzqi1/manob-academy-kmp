@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui // Sesuaikan dengan package utama Anda
+package com.mnb.manobacademy.views.auth.ui // Sesuaikan dengan package utama Anda
 
 // Import Compose & Material Lengkap
 import androidx.compose.foundation.Image
@@ -19,13 +19,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 // Import Decompose state handling
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.mnb.manobacademy.features.auth.component.GoogleFacebookLoginRow
+import com.mnb.manobacademy.views.auth.component.GoogleFacebookLoginRow
 // Import Komponen Decompose
-import com.mnb.manobacademy.features.auth.component.LoginComponent // <<< IMPORT LoginComponent
+import com.mnb.manobacademy.views.auth.component.LoginComponent // <<< IMPORT LoginComponent
 // Import Utilitas Platform & Resource Anda
 import com.mnb.manobacademy.util.PlatformType
 import com.mnb.manobacademy.util.currentPlatform
-import com.mnb.manobacademy.getScreenHeightDp // Fungsi expect untuk tinggi layar
+import com.mnb.manobacademy.util.getScreenHeightDp // Fungsi expect untuk tinggi layar
 import manobacademykmp.composeapp.generated.resources.Res
 import manobacademykmp.composeapp.generated.resources.logo_manob_academy_notext
 import org.jetbrains.compose.resources.painterResource

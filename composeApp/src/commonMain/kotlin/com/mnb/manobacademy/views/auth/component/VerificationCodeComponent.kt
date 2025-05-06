@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.component // Sesuaikan package jika perlu
+package com.mnb.manobacademy.views.auth.component // Sesuaikan package jika perlu
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.essenty.lifecycle.doOnDestroy

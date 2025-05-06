@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui // Sesuaikan package
+package com.mnb.manobacademy.views.auth.ui // Sesuaikan package
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,13 +24,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.mnb.manobacademy.features.auth.component.ForgotPasswordComponent
-import com.mnb.manobacademy.features.auth.component.ResetMethod
+import com.mnb.manobacademy.views.auth.component.ForgotPasswordComponent
+import com.mnb.manobacademy.views.auth.component.ResetMethod
 import com.mnb.manobacademy.ui.components.PrimaryActionButton
 // Import komponen & utilitas
 import com.mnb.manobacademy.ui.theme.dimens
 // Import fungsi expect untuk tinggi layar
-import com.mnb.manobacademy.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
+import com.mnb.manobacademy.util.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
 // Import Resources
 import manobacademykmp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource

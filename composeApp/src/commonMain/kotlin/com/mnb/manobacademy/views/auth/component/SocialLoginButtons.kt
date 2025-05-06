@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.component // <- Sesuaikan dengan package komponen Anda
+package com.mnb.manobacademy.views.auth.component // <- Sesuaikan dengan package komponen Anda
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

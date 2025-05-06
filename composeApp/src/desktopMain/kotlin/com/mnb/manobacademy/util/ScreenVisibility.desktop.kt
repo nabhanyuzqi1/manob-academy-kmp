@@ -1,10 +1,10 @@
 // --- File: composeApp/src/desktopMain/kotlin/com/mnb/manobacademy/ScreenVisibility.kt ---
-package com.mnb.manobacademy
+package com.mnb.manobacademy.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mnb.manobacademy.features.auth.ui.SplashScreen
+import com.mnb.manobacademy.views.auth.ui.SplashScreen
 import com.mnb.manobacademy.navigation.RootComponent
 
 actual fun shouldShowSplash(root: RootComponent, onNavigateToLogin: () -> Unit): @Composable () -> Unit {

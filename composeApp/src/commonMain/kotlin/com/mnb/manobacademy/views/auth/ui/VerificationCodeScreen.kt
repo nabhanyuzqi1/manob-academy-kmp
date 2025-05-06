@@ -1,4 +1,4 @@
-package com.mnb.manobacademy.features.auth.ui // Sesuaikan dengan package utama Anda
+package com.mnb.manobacademy.views.auth.ui // Sesuaikan dengan package utama Anda
 
 // Import komponen & utilitas
 // Import Resources
@@ -14,12 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 // Import baru untuk unit Dp
 import androidx.compose.ui.unit.dp
-import com.mnb.manobacademy.features.auth.component.OtpInputFields
+import com.mnb.manobacademy.views.auth.component.OtpInputFields
 // Pastikan import PrimaryActionButton benar
 import com.mnb.manobacademy.ui.components.PrimaryActionButton
 import com.mnb.manobacademy.ui.theme.dimens // <- Import helper dimens
 // Import fungsi expect untuk tinggi layar
-import com.mnb.manobacademy.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
+import com.mnb.manobacademy.util.getScreenHeightDp // <<< IMPORT FUNGSI EXPECT
 import manobacademykmp.composeapp.generated.resources.* // <- Import semua resource
 import org.jetbrains.compose.resources.stringResource // <- Import stringResource
 
