@@ -19,7 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimpor
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.mnb.manobacademy.features.home.ui.HomeScreen
+import com.mnb.manobacademy.views.home.ui.HomeScreen
 import com.mnb.manobacademy.models.BottomNavItem
 import com.mnb.manobacademy.models.Category
 import com.mnb.manobacademy.models.Course
@@ -37,8 +37,8 @@ import com.mnb.manobacademy.views.auth.ui.VerificationCodeScreen
 import com.mnb.manobacademy.views.auth.component.ForgotPasswordComponent
 import com.mnb.manobacademy.views.auth.component.LoginComponent
 import com.mnb.manobacademy.views.auth.component.ResetMethod
-// Import Navigation & App
-import com.mnb.manobacademy.navigation.DefaultRootComponent
+
+import com.mnb.manobacademy.navigation.RootComponent.DefaultRootComponent
 // import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()
 // Import Tema
 import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
@@ -188,7 +188,7 @@ fun GuideScreenPreview() { // <<< Nama fungsi preview baru
 }
 
 // --- Preview untuk HomeScreen ---
-@Preview(showSystemUi = true, showBackground = true)
+@Preview(showSystemUi = true, showBackground = true, heightDp = 1200, widthDp = 400)
 @Composable
 fun HomeScreenPreview() {
     AppTheme { // Ensure AppTheme provides MaterialTheme and Dimens

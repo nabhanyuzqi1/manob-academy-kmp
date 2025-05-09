@@ -41,7 +41,7 @@ interface RootComponent {
         data class ForgotPassword(val component: ForgotPasswordComponent) : Child
         data object Guide : Child
         data class Home(val component: HomeComponent) : Child
-    }
+
 }
 
 // Implementasi Default Root Component
@@ -96,6 +96,7 @@ class DefaultRootComponent(
                     onLoginSuccess = { navigation.replaceAll(ScreenConfig.Home) }
                 )
             )
+
             is ScreenConfig.Register -> Register // Nanti perlu diubah jika Register butuh Component
             is ScreenConfig.VerificationCode -> VerificationCode(
                 DefaultVerificationCodeComponent(
@@ -108,6 +109,7 @@ class DefaultRootComponent(
                     onNavigateBack = { navigation.pop() }
                 )
             )
+
             is ScreenConfig.ForgotPassword -> ForgotPassword(
                 DefaultForgotPasswordComponent(
                     componentContext = context,
@@ -118,6 +120,7 @@ class DefaultRootComponent(
                     }
                 )
             )
+
             is ScreenConfig.Guide -> Guide // Kembalikan data object Guide
             is ScreenConfig.Home -> Home(
                 // Parameter DefaultHomeComponent telah dilengkapi
@@ -166,4 +169,5 @@ class DefaultRootComponent(
             )
 
         }
+}
 }

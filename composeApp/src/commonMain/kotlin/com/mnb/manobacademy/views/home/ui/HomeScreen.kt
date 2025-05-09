@@ -1,6 +1,5 @@
-package com.mnb.manobacademy.features.home.ui // Ensure this matches your project structure
+package com.mnb.manobacademy.views.home.ui // Ensure this matches your project structure
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 // import androidx.compose.foundation.border // Not used, can be removed
 import androidx.compose.foundation.clickable
@@ -14,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Notifications // Specifically import for notification icon
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 // import androidx.compose.ui.layout.ContentScale // Not used, can be removed
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -33,7 +32,6 @@ import com.mnb.manobacademy.models.Course
 import com.mnb.manobacademy.models.FavoriteCourse
 import com.mnb.manobacademy.models.Instructor
 import com.mnb.manobacademy.models.NewsItem
-import com.mnb.manobacademy.models.bottomNavItems
 import com.mnb.manobacademy.models.dummyCategories
 import com.mnb.manobacademy.models.dummyCourses
 import com.mnb.manobacademy.models.dummyInstructors
@@ -90,32 +88,25 @@ fun HomeScreen(component: HomeComponent) {
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    IconButton(onClick = { component.onNotificationClicked() }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Notifications,
-                            contentDescription = stringResource(Res.string.home_notification_icon_desc)
-                        )
+                    Row{
+                        IconButton(onClick = { component.onNotificationClicked() }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Notifications,
+                                contentDescription = stringResource(Res.string.home_notification_icon_desc)
+                            )
+                        }
+                        IconButton(onClick = { component.onLogoutClicked() }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Search,
+                                contentDescription = stringResource(Res.string.home_search_icon_desc)
+                            )
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(dimens.spacingMedium))
-                OutlinedTextField(
-                    value = state.searchQuery, // state.value.searchQuery if state is Value<HomeComponent.State>
-                    onValueChange = component::onSearchQueryChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(stringResource(Res.string.home_search_placeholder)) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(Res.string.home_search_icon_desc)) },
-                    shape = RoundedCornerShape(dimens.cardCornerRadiusLarge),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                    ),
-                    singleLine = true
-                )
                 Spacer(modifier = Modifier.height(dimens.spacingLarge))
             }
+
 
             // --- Kelas Favorit ---
             SectionTitle(titleRes = Res.string.home_favorite_class_title)
@@ -274,95 +265,6 @@ private fun SectionTitle(
     }
 }
 
-@Composable
-private fun FavoriteCourseCard(
-    course: FavoriteCourse,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val dimens = MaterialTheme.dimens
-    Card(
-        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = dimens.cardElevation),
-        shape = RoundedCornerShape(dimens.cardCornerRadiusLarge),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-    ) {
-        Row(modifier = Modifier.padding(dimens.paddingMedium)) {
-            Box(
-                modifier = Modifier
-                    .size(dimens.favoriteClassImageHeight)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(dimens.cardCornerRadiusMedium))
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Default.Image,
-                    contentDescription = stringResource(Res.string.home_class_icon_desc),
-                    modifier = Modifier.size(dimens.paddingHuge),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                // TODO: Replace with Image(painterResource(course.imageUrl)...)
-            }
-            Spacer(modifier = Modifier.width(dimens.spacingMedium))
-            Column(modifier = Modifier.weight(1f)) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(Res.string.home_lectures, course.lectures),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = stringResource(Res.string.home_enrolled, course.enrolled),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Spacer(modifier = Modifier.height(dimens.spacingSmall))
-                Text(
-                    text = course.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = "By ${course.instructor}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(dimens.spacingSmall))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Filled.Star,
-                            contentDescription = stringResource(Res.string.home_rating_desc, course.rating.toString()),
-                            tint = Color(0xFFFFC107),
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(dimens.spacingSmall))
-                        Text(
-                            text = "%.1f".format(course.rating),
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                    TextButton(onClick = onClick, contentPadding = PaddingValues(0.dp)) {
-                        Text(stringResource(Res.string.home_more))
-                    }
-                }
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -549,32 +451,3 @@ private fun NewsCard(
     }
 }
 
-@Composable
-private fun HomeBottomNavigation(
-    currentRoute: String,
-    onItemSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    NavigationBar(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = MaterialTheme.dimens.cardElevation // Use elevation from dimens
-    ) {
-        bottomNavItems.forEach { item ->
-            NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = stringResource(item.titleRes)) },
-                label = { Text(stringResource(item.titleRes), style = MaterialTheme.typography.labelSmall) },
-                selected = currentRoute == item.route,
-                onClick = { onItemSelected(item.route) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                alwaysShowLabel = true
-            )
-        }
-    }
-}
