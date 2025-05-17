@@ -14,8 +14,8 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.mnb.manobacademy.navigation.DefaultRootComponent
 import com.mnb.manobacademy.App // <- Import App dari commonMain
+import com.mnb.manobacademy.navigation.RootComponent.DefaultRootComponent
 
 @OptIn(ExperimentalDecomposeApi::class) // Diperlukan untuk LifecycleController
 fun main() = application { // Pindahkan semua logika ke dalam application block

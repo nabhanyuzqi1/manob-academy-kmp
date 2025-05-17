@@ -49,7 +49,7 @@ data class Dimensions(
     val searchBarHeight: Dp = 56.dp, // Example, ensure this matches OutlinedTextField desired height
     val categoryChipPaddingHorizontal: Dp = 12.dp,
     val categoryChipPaddingVertical: Dp = 8.dp,
-    val favoriteClassImageHeight: Dp = 100.dp, // Height for the image box in FavoriteCourseCard
+    val favoriteClassImageHeight: Dp = 200.dp, // Height for the image box in FavoriteCourseCard
     val classCardWidth: Dp = 180.dp,
     val classCardImageHeight: Dp = 100.dp,
     val instructorAvatarSize: Dp = 60.dp,

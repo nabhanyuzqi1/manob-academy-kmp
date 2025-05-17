@@ -188,7 +188,7 @@ fun GuideScreenPreview() { // <<< Nama fungsi preview baru
 }
 
 // --- Preview untuk HomeScreen ---
-@Preview(showSystemUi = true, showBackground = true, heightDp = 1200, widthDp = 400)
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     AppTheme { // Ensure AppTheme provides MaterialTheme and Dimens

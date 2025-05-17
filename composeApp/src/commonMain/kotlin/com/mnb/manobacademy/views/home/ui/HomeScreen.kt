@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Article
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Notifications // Specifically import for notification icon
 import androidx.compose.material.icons.outlined.Search
@@ -77,7 +78,7 @@ fun HomeScreen(component: HomeComponent) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column {
+                    Column() {
                         Text(
                             text = stringResource(Res.string.home_greeting_short),
                             style = MaterialTheme.typography.titleSmall
@@ -104,12 +105,12 @@ fun HomeScreen(component: HomeComponent) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(dimens.spacingLarge))
+                Spacer(modifier = Modifier.height(dimens.spacingExtraLarge))
             }
 
 
             // --- Kelas Favorit ---
-            SectionTitle(titleRes = Res.string.home_favorite_class_title)
+            //SectionTitle(titleRes = Res.string.home_favorite_class_title)
             state.favoriteCourse?.let { course -> // state.value.favoriteCourse if state is Value<HomeComponent.State>
                 FavoriteCourseCard(
                     course = course,
@@ -131,7 +132,7 @@ fun HomeScreen(component: HomeComponent) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Spacer(modifier = Modifier.height(dimens.spacingLarge))
+            Spacer(modifier = Modifier.height(dimens.spacingExtraLarge))
 
             // --- Kategori ---
             SectionTitle(titleRes = Res.string.home_category_title)
@@ -153,11 +154,7 @@ fun HomeScreen(component: HomeComponent) {
             Spacer(modifier = Modifier.height(dimens.spacingLarge))
 
             // --- Daftar Kelas ---
-            SectionTitle(
-                titleRes = Res.string.home_bottom_nav_classes,
-                actionTextRes = Res.string.home_view_all,
-                onActionClick = { component.onViewAllClassesClicked() }
-            )
+
             LazyRow(
                 contentPadding = PaddingValues(horizontal = dimens.paddingLarge),
                 horizontalArrangement = Arrangement.spacedBy(dimens.spacingMedium)
@@ -265,37 +262,6 @@ private fun SectionTitle(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CategoryChip(
-    category: Category,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val dimens = MaterialTheme.dimens
-    FilterChip(
-        selected = isSelected,
-        onClick = onClick,
-        modifier = modifier,
-        shape = RoundedCornerShape(dimens.cardCornerRadiusLarge),
-        label = { Text(stringResource(category.nameRes)) },
-        leadingIcon = {
-            Icon(
-                imageVector = category.icon,
-                contentDescription = null,
-                modifier = Modifier.size(FilterChipDefaults.IconSize)
-            )
-        },
-        colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        )
-    )
-}
 
 @Composable
 private fun CourseCard(
@@ -417,7 +383,7 @@ private fun NewsCard(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.Article, // News-related icon
+                    imageVector = Icons.AutoMirrored.Filled.Article, // News-related icon
                     contentDescription = stringResource(Res.string.home_news_image_desc),
                     modifier = Modifier.size(dimens.paddingHuge),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
