@@ -91,6 +91,4 @@
     <string name="home_popular_class_title">Kelas Populer</string>
     <string name="home_best_seller_title">Kelas Terbaik</string> <string name="home_news_title">Berita</string>
     <string name="home_news_image_desc">Gambar Berita</string> <string name="home_all_classes_title">Semua Kelas</string>
-
-    <string name="edit_profile_title">Edit Profile</string>
 </resources>
