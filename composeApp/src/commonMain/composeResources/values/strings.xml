@@ -93,4 +93,37 @@
     <string name="home_news_image_desc">Gambar Berita</string> <string name="home_all_classes_title">Semua Kelas</string>
 
     <string name="edit_profile_title">Edit Profile</string>
+
+
+    <string name="booking_screen_title">Booking Class</string>
+    <string name="booking_favorite_icon_desc">Favorit</string>
+    <string name="booking_step_checkout">Checkout</string>
+    <string name="booking_step_payment">Payment</string>
+    <string name="booking_step_done">Done</string>
+    <string name="booking_item_image_desc">Gambar Kelas</string>
+    <string name="booking_subtotal_label">Subtotal</string>
+    <string name="booking_checkout_button">Checkout</string>
+    <string name="booking_item_checkbox_desc">Pilih item</string>
+    <string name="booking_progress_completed_desc">Langkah Selesai</string>
+    <string name="booking_progress_active_desc">Langkah Aktif</string>
+    <string name="booking_no_items_to_checkout">Tidak ada item untuk di-checkout</string>
+
+
+    <string name="checkout_screen_title">Check Out</string>
+    <string name="checkout_item_ends_on">Berakhir pada %1$s</string>
+    <string name="checkout_order_summary_title">Ringkasan Pesanan</string>
+    <string name="checkout_order_label">Pesanan</string>
+    <string name="checkout_total_label">Total</string>
+    <string name="checkout_payment_method_button">Metode Pembayaran</string>
+    <string name="checkout_no_items_in_cart">Tidak ada item di keranjang.</string> <string name="payment_screen_title">Pembayaran</string>
+    <string name="payment_select_method_label">Pilih Metode Pembayaran</string>
+    <string name="payment_credit_debit_cards">Kartu Kredit/Debit</string>
+    <string name="payment_atm_bank_transfer">ATM/Transfer Bank</string>
+    <string name="payment_e_money">E-Money</string>
+    <string name="payment_over_the_counter">Over the Counter</string>
+    <string name="payment_other_payment">Pembayaran Lainnya</string>
+    <string name="payment_pay_now_button">Bayar Sekarang</string>
+    <string name="payment_method_selected_desc">Metode %1$s dipilih</string>
+    <string name="payment_method_icon_desc">Ikon %1$s</string>
+    <string name="payment_no_method_selected">Pilih metode pembayaran terlebih dahulu.</string>
 </resources>

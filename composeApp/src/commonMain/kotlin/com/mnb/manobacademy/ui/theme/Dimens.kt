@@ -84,6 +84,16 @@ data class Dimensions(
     val guideIndicatorSpacing: Dp = 8.dp,
     val guideTextPaddingBottom: Dp = 48.dp,
     val guideButtonPaddingBottom: Dp = 32.dp,
+
+
+    // Dimensi baru untuk BookingScreen (sesuaikan dengan inspeksi UI jika bisa)
+    val progressIndicatorSize: Dp = 32.dp,       // Ukuran lingkaran progress step
+    val progressIndicatorDotSize: Dp = 10.dp,      // Ukuran titik di tengah step aktif
+    val progressIndicatorStroke: Dp = 2.dp,        // Ketebalan border & garis progress
+    val bookingItemImageSize: Dp = 72.dp,        // Ukuran gambar di list item booking
+
+    val paymentMethodIconHeight: Dp = 24.dp,
+    val paymentMethodIconMaxWidth: Dp = 70.dp,
 )
 
 // --- Set Dimensi untuk Ukuran Layar Berbeda (Disesuaikan dengan M3) ---

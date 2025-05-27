@@ -118,6 +118,9 @@ kotlin {
                 // Coroutines
                 implementation(libs.kotlinx.coroutines.core)
 
+                implementation(libs.essenty.parcelable)
+                implementation(libs.coil.compose) // Tambahkan ini
+                implementation(libs.coil.network.ktor) // Opsional, jika ingin menggunakan Ktor client dengan Coil
             }
         }
     }

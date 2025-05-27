@@ -19,13 +19,18 @@ import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimpor
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
+import com.mnb.manobacademy.models.BookingItem
 import com.mnb.manobacademy.views.home.ui.HomeScreen
 import com.mnb.manobacademy.models.BottomNavItem
 import com.mnb.manobacademy.models.Category
 import com.mnb.manobacademy.models.Course
 import com.mnb.manobacademy.models.FavoriteCourse
 import com.mnb.manobacademy.models.Instructor
+import com.mnb.manobacademy.models.PaymentCategory
 import com.mnb.manobacademy.models.dummyNewsItems
+import com.mnb.manobacademy.models.getDummyBookingItems
+import com.mnb.manobacademy.models.getDummyPaymentMethods
 // Import UI Screens
 import com.mnb.manobacademy.views.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
 import com.mnb.manobacademy.views.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
@@ -39,11 +44,18 @@ import com.mnb.manobacademy.views.auth.component.LoginComponent
 import com.mnb.manobacademy.views.auth.component.ResetMethod
 
 import com.mnb.manobacademy.navigation.RootComponent.DefaultRootComponent
+import com.mnb.manobacademy.ui.theme.AppDimens
 // import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()
 // Import Tema
 import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
 import com.mnb.manobacademy.views.home.component.HomeComponent
-import com.mnb.manobacademy.views.payment.ui.BookingScreen
+import com.mnb.manobacademy.views.booking.component.BookingComponent
+import com.mnb.manobacademy.views.booking.ui.BookingListItem
+import com.mnb.manobacademy.views.booking.ui.BookingScreen
+import com.mnb.manobacademy.views.checkout.component.CheckoutComponent
+import com.mnb.manobacademy.views.checkout.ui.CheckoutScreen
+import com.mnb.manobacademy.views.payment.component.PaymentComponent
+import com.mnb.manobacademy.views.payment.ui.PaymentScreen
 import com.mnb.manobacademy.views.profile.ui.EditProfileScreen
 import com.mnb.manobacademy.views.profile.ui.ProfileScreen
 import com.mnb.manobacademy.views.settings.ui.SettingsScreen
@@ -269,12 +281,141 @@ fun SettingScreenPreview() {
     }
 }
 
-// --- Preview untuk SettingScreen ---
-@Preview(showSystemUi = true, showBackground = true)
+// --- Preview Booking Component (Stub Implementation) ---
+class PreviewBookingComponent : BookingComponent {
+    override val state: Value<BookingComponent.State> =
+        MutableValue(
+            BookingComponent.State(
+                bookingItems = getDummyBookingItems(), // Gunakan dummy data
+                subtotal = getDummyBookingItems().filter { it.isSelected }.sumOf { it.price },
+                currentStep = 0, // Mulai dari step Checkout
+                isFavorite = false // Contoh state favorit
+            )
+        )
+
+    override fun onBackClicked() {
+        println("Preview: Back clicked")
+    }
+
+    override fun onFavoriteClicked() {
+        println("Preview: Favorite clicked")
+        // Untuk interaktivitas di preview, Anda bisa update state di sini jika MutableValue dipegang oleh kelas ini
+        // (state as? MutableValue)?.update { it.copy(isFavorite = !it.isFavorite) }
+    }
+
+    override fun onItemCheckedChanged(itemId: String, isChecked: Boolean) {
+        println("Preview: Item $itemId changed to $isChecked")
+        // (state as? MutableValue)?.update { currentState ->
+        //     val updatedItems = currentState.bookingItems.map { item ->
+        //         if (item.id == itemId) item.copy(isSelected = isChecked) else item
+        //     }
+        //     val newSubtotal = updatedItems.filter { it.isSelected }.sumOf { it.price }
+        //     currentState.copy(bookingItems = updatedItems, subtotal = newSubtotal)
+        // }
+    }
+
+    override fun onCheckoutClicked() {
+        println("Preview: Checkout clicked")
+    }
+
+    override fun onBottomNavItemSelected(newRoute: String) {
+        println("Preview: Bottom nav item selected: $newRoute")
+        // (state as? MutableValue)?.update { it.copy(currentBottomNavRoute = newRoute) }
+    }
+}
+
+// --- Preview untuk BookingScreen ---
+@Preview(showSystemUi = true, showBackground = true, name = "Booking Screen Light")
+@Preview(showSystemUi = true, showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Booking Screen Dark")
 @Composable
 fun BookingScreenPreview() {
-    AppTheme {
+    AppTheme { // Pastikan AppTheme Anda mengatur LocalDimens dan LocalColorScheme
         BookingScreen(
+            component = PreviewBookingComponent()
         )
+    }
+}
+
+@Preview(showBackground = true, name = "Booking Item Selected")
+@Composable
+fun BookingListItemSelectedPreview() {
+    AppTheme {
+        BookingListItem(
+            item = BookingItem("prev1", null, "Fotografi Advanced", "Selasa, 21 April 2025", 150000.0, "Rp.150.000", true),
+            onCheckedChanged = {},
+            dimens = AppDimens // Atau dimens spesifik jika perlu diisolasi
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Booking Item Unselected")
+@Composable
+fun BookingListItemUnselectedPreview() {
+    AppTheme {
+        BookingListItem(
+            item = BookingItem("prev2", null, "Workshop Editing", "Rabu, 22 April 2025", 120000.0, "Rp.120.000", false),
+            onCheckedChanged = {},
+            dimens = AppDimens
+        )
+    }
+}
+
+class PreviewCheckoutComponent : CheckoutComponent {
+    override val state: Value<CheckoutComponent.State> =
+        MutableValue(
+            CheckoutComponent.State(
+                itemsToCheckout = getDummyBookingItems().take(2).map {
+                    // Modifikasi dummy data jika perlu, misal tanggal akhir
+                    it.copy(schedule = "01.08.2025")
+                },
+                totalAmount = getDummyBookingItems().take(2).sumOf { it.price }
+            )
+        )
+    override fun onBackClicked() {}
+    override fun onNavigateToPaymentMethod() {}
+}
+
+@Preview(showBackground = true, showSystemUi = true, name = "Checkout Screen Light")
+@Preview(showBackground = true, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Checkout Screen Dark")
+@Composable
+fun CheckoutScreenPreview() {
+    AppTheme {
+        CheckoutScreen(component = PreviewCheckoutComponent())
+    }
+}
+
+class PreviewPaymentComponent : PaymentComponent {
+    private val _state = MutableValue(
+        PaymentComponent.State(
+            itemsToPay = getDummyBookingItems().take(1),
+            totalAmount = getDummyBookingItems().first().price,
+            paymentMethods = getDummyPaymentMethods(),
+            selectedPaymentMethodId = getDummyPaymentMethods().first { it.category == PaymentCategory.E_MONEY }.id, // Pilih OVO sebagai default
+            currentStep = 1
+        )
+    )
+    override val state: Value<PaymentComponent.State> = _state
+
+    override fun onBackClicked() {}
+    override fun onPaymentMethodSelected(methodId: String) {
+        _state.update { currentState ->
+            val updatedMethods = currentState.paymentMethods.map {
+                it.copy(isSelected = it.id == methodId)
+            }
+            currentState.copy(
+                paymentMethods = updatedMethods,
+                selectedPaymentMethodId = methodId
+            )
+        }
+    }
+    override fun onPayNowClicked() {}
+}
+
+@Preview(showBackground = true, showSystemUi = true, name = "Payment Screen Light")
+@Preview(showBackground = true, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Payment Screen Dark")
+@Composable
+fun PaymentScreenPreview() {
+    AppTheme {
+        PaymentScreen(component = PreviewPaymentComponent())
     }
 }
