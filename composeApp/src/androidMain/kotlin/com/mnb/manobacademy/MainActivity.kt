@@ -43,6 +43,10 @@ import com.mnb.manobacademy.navigation.RootComponent.DefaultRootComponent
 // Import Tema
 import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
 import com.mnb.manobacademy.views.home.component.HomeComponent
+import com.mnb.manobacademy.views.payment.ui.BookingScreen
+import com.mnb.manobacademy.views.profile.ui.EditProfileScreen
+import com.mnb.manobacademy.views.profile.ui.ProfileScreen
+import com.mnb.manobacademy.views.settings.ui.SettingsScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import manobacademykmp.composeapp.generated.resources.Res
@@ -236,3 +240,41 @@ fun HomeScreenPreview() {
     }
 }
 
+// --- Preview untuk ProfileScreen ---
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    AppTheme {
+        ProfileScreen()
+    }
+}
+
+// --- Preview untuk EditProfileScreen ---
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun EditProfileScreenPreview() {
+    AppTheme {
+        EditProfileScreen()
+    }
+}
+
+// --- Preview untuk SettingScreen ---
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun SettingScreenPreview() {
+    AppTheme {
+        SettingsScreen(
+            onNavigateBack = {}
+        )
+    }
+}
+
+// --- Preview untuk SettingScreen ---
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun BookingScreenPreview() {
+    AppTheme {
+        BookingScreen(
+        )
+    }
+}
