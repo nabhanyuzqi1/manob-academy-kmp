@@ -33,15 +33,13 @@ import org.jetbrains.compose.resources.stringResource // <- Import stringResourc
  * @param onResendClick Lambda yang dipanggil saat link Kirim Ulang diklik.
  * @param emailAddress Opsional, alamat email yang ditampilkan di prompt.
  */
-@OptIn(ExperimentalMaterial3Api::class) // Untuk TopAppBar
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VerificationCodeScreen(
-    onNavigateBack: () -> Unit,
-    onVerifyClick: (String) -> Unit,
-    onResendClick: () -> Unit,
-    emailAddress: String? = null // Opsional, bisa ditampilkan di teks prompt
+    component: VerificationCodeComponent,
+    modifier: Modifier = Modifier
 ) {
-    // Akses dimensi dari tema
+    val state by component.state.subscribeAsState()
     val dimens = MaterialTheme.dimens
     var otpCode by remember { mutableStateOf("") }
     var isOtpComplete by remember { mutableStateOf(false) }
@@ -60,7 +58,7 @@ fun VerificationCodeScreen(
             TopAppBar(
                 title = { Text(stringResource(Res.string.otp_screen_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = { component.onBackClicked() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(Res.string.otp_back_button_desc)
@@ -76,23 +74,32 @@ fun VerificationCodeScreen(
         },
         // Tempatkan Tombol Verifikasi di bottomBar
         bottomBar = {
-            // Gunakan Column atau Box untuk padding di sekitar tombol
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .navigationBarsPadding() // <<< Padding untuk navigation bar
-                    .padding(horizontal = dimens.paddingHuge) // Padding horizontal
-                    .padding(bottom = dimens.paddingExtraLarge) // Padding bawah sedikit
+                    .navigationBarsPadding()
+                    .padding(horizontal = dimens.paddingHuge)
+                    .padding(bottom = dimens.paddingExtraLarge)
             ) {
+                if (state.error != null) {
+                    Text(
+                        text = state.error!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(bottom = dimens.paddingMedium)
+                    )
+                }
+                
                 PrimaryActionButton(
                     text = stringResource(Res.string.otp_verify_button),
                     onClick = {
-                        if (isOtpComplete) {
-                            onVerifyClick(otpCode)
+                        if (isOtpComplete && !state.isLoading) {
+                            component.onVerifyClicked(otpCode)
                         }
                     },
-                    enabled = isOtpComplete,
-                    modifier = Modifier.fillMaxWidth() // Tombol mengisi lebar
+                    enabled = isOtpComplete && !state.isLoading,
+                    loading = state.isLoading,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
         },
@@ -146,15 +153,29 @@ fun VerificationCodeScreen(
                     text = stringResource(Res.string.otp_didnt_receive),
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                TextButton(onClick = onResendClick) {
+                TextButton(
+                    onClick = { if (!state.isLoading && state.isResendEnabled) component.onResendClicked() },
+                    enabled = !state.isLoading && state.isResendEnabled
+                ) {
                     Text(
-                        text = stringResource(Res.string.otp_resend_link),
+                        text = if (state.resendCooldown > 0) 
+                            "${stringResource(Res.string.otp_resend_link)} (${state.resendCooldown}s)"
+                        else 
+                            stringResource(Res.string.otp_resend_link),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
 
-            // Spacer tambahan di bawah sebelum BottomBar (opsional)
+            if (state.successMessage != null) {
+                Spacer(modifier = Modifier.height(dimens.spacingMedium))
+                Text(
+                    text = state.successMessage!!,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
             Spacer(modifier = Modifier.height(dimens.spacingLarge))
 
         } // Akhir Column konten utama

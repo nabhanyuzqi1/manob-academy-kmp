@@ -14,27 +14,34 @@ import kotlinx.coroutines.launch
  */
 interface VerificationCodeComponent {
     /**
-     * Alamat email tempat kode OTP dikirim (untuk ditampilkan di UI).
-     * Bisa null jika tidak tersedia.
+     * Current state of the verification UI
+     */
+    val state: Value<VerificationState>
+
+    /**
+     * Email address where OTP code was sent
      */
     val emailAddress: String?
 
     /**
-     * Dipanggil ketika pengguna mengklik tombol Verifikasi.
-     * @param code Kode OTP yang dimasukkan pengguna.
+     * Called when verify button is clicked
      */
     fun onVerifyClicked(code: String)
 
     /**
-     * Dipanggil ketika pengguna mengklik link Kirim Ulang.
+     * Called when resend link is clicked
      */
     fun onResendClicked()
 
     /**
-     * Dipanggil ketika pengguna menekan tombol kembali di TopAppBar.
-     * (Meskipun navigasi ditangani oleh Root, ini bisa berguna untuk logika internal jika diperlukan).
+     * Called when back button is pressed
      */
     fun onBackClicked()
+
+    /**
+     * Called to dismiss any error messages
+     */
+    fun onErrorDismissed()
 }
 
 /**
@@ -47,108 +54,143 @@ interface VerificationCodeComponent {
  */
 class DefaultVerificationCodeComponent(
     componentContext: ComponentContext,
-    val email: String?, // Terima email saat pembuatan
-    private val onVerified: () -> Unit, // Callback saat berhasil verifikasi
-    private val onNavigateBack: () -> Unit // Callback untuk navigasi kembali
-) : VerificationCodeComponent, ComponentContext by componentContext { // Delegasikan ComponentContext
+    val email: String?,
+    private val onVerified: () -> Unit,
+    private val onNavigateBack: () -> Unit,
+    private val verificationRepository: VerificationRepository
+) : VerificationCodeComponent, ComponentContext by componentContext {
 
-    // Buat CoroutineScope untuk tugas-tugas background (misalnya, verifikasi)
-    // Gunakan SupervisorJob agar kegagalan satu job tidak membatalkan yang lain
-    // Gunakan Dispatchers.Main.immediate untuk update UI yang aman jika diperlukan dari background
-    private val componentScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
-
-    // Implementasi properti dari interface
+    private val _state = MutableValue(VerificationState())
+    override val state: Value<VerificationState> = _state
     override val emailAddress: String? = email
 
-    /**
-     * Menangani klik tombol Verifikasi.
-     * Memulai proses verifikasi kode OTP.
-     */
+    private val componentScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    private var resendJob: Job? = null
+
     override fun onVerifyClicked(code: String) {
-        println("Verification attempt: Code='$code', Email='$emailAddress'")
-        // TODO: Tampilkan indikator loading di UI (misalnya melalui StateFlow)
+        if (_state.value.isLoading) return
 
-        // Jalankan logika verifikasi di background thread
-        componentScope.launch(Dispatchers.Default) { // Gunakan Dispatchers.Default untuk CPU-bound task
-            try {
-                // --- TODO: Implementasikan logika verifikasi di sini ---
-                // Contoh: Panggil UseCase atau Repository
-                // val isSuccess = verifyOtpUseCase(emailAddress, code)
-                delay(1500) // Simulasi network delay
-                val isSuccess = code == "123456" // Contoh logika sukses sederhana
-
-                // Kembali ke Main thread untuk navigasi/update UI
-                launch(Dispatchers.Main.immediate) {
-                    if (isSuccess) {
-                        println("Verification Successful!")
-                        onVerified() // Panggil callback sukses
-                    } else {
-                        println("Verification Failed!")
-                        // TODO: Tampilkan pesan error di UI (misalnya melalui StateFlow)
-                    }
-                    // TODO: Sembunyikan indikator loading
-                }
-            } catch (e: Exception) {
-                // Tangani error (misalnya, masalah jaringan)
-                println("Verification Error: ${e.message}")
-                launch(Dispatchers.Main.immediate) {
-                    // TODO: Tampilkan pesan error di UI
-                    // TODO: Sembunyikan indikator loading
-                }
-            }
-        }
-    }
-
-    /**
-     * Menangani klik link Kirim Ulang.
-     * Memulai proses pengiriman ulang kode OTP.
-     */
-    override fun onResendClicked() {
-        println("Resend code requested for Email='$emailAddress'")
-        // TODO: Tampilkan indikator loading/feedback di UI
+        _state.update { it.copy(isLoading = true, error = null) }
 
         componentScope.launch(Dispatchers.Default) {
             try {
-                // --- TODO: Implementasikan logika kirim ulang kode di sini ---
-                // Contoh: Panggil UseCase atau Repository
-                // val resendSuccess = resendOtpUseCase(emailAddress)
-                delay(1000) // Simulasi network delay
-                val resendSuccess = true // Contoh sukses
-
-                launch(Dispatchers.Main.immediate) {
-                    if (resendSuccess) {
-                        println("Resend Successful!")
-                        // TODO: Tampilkan pesan sukses/feedback di UI (misalnya, "Kode baru telah dikirim")
-                    } else {
-                        println("Resend Failed!")
-                        // TODO: Tampilkan pesan error di UI
+                val result = verificationRepository.verifyCode(email ?: "", code)
+                withContext(Dispatchers.Main.immediate) {
+                    when (result) {
+                        is VerificationResult.Success -> {
+                            _state.update { 
+                                it.copy(
+                                    isLoading = false,
+                                    verificationSuccess = true,
+                                    successMessage = "Verification successful"
+                                )
+                            }
+                            onVerified()
+                        }
+                        is VerificationResult.Invalid -> {
+                            _state.update { 
+                                it.copy(
+                                    isLoading = false,
+                                    error = "Invalid verification code"
+                                )
+                            }
+                        }
+                        is VerificationResult.Error -> {
+                            _state.update { 
+                                it.copy(
+                                    isLoading = false,
+                                    error = result.message
+                                )
+                            }
+                        }
                     }
-                    // TODO: Sembunyikan indikator loading/feedback
                 }
             } catch (e: Exception) {
-                println("Resend Error: ${e.message}")
-                launch(Dispatchers.Main.immediate) {
-                    // TODO: Tampilkan pesan error di UI
-                    // TODO: Sembunyikan indikator loading/feedback
+                withContext(Dispatchers.Main.immediate) {
+                    _state.update { 
+                        it.copy(
+                            isLoading = false,
+                            error = e.message ?: "An unexpected error occurred"
+                        )
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Menangani klik tombol kembali.
-     * Memanggil callback navigasi kembali yang disediakan oleh parent (RootComponent).
-     */
+    override fun onResendClicked() {
+        if (_state.value.isLoading || !_state.value.isResendEnabled) return
+
+        _state.update { it.copy(isLoading = true, error = null) }
+
+        resendJob?.cancel()
+        resendJob = componentScope.launch(Dispatchers.Default) {
+            try {
+                val result = verificationRepository.resendCode(email ?: "")
+                withContext(Dispatchers.Main.immediate) {
+                    when (result) {
+                        is ResendResult.Success -> {
+                            _state.update { 
+                                it.copy(
+                                    isLoading = false,
+                                    successMessage = "Verification code resent",
+                                    isResendEnabled = false
+                                )
+                            }
+                            startResendCooldown()
+                        }
+                        is ResendResult.Error -> {
+                            _state.update { 
+                                it.copy(
+                                    isLoading = false,
+                                    error = result.message
+                                )
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main.immediate) {
+                    _state.update { 
+                        it.copy(
+                            isLoading = false,
+                            error = e.message ?: "Failed to resend code"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     override fun onBackClicked() {
         onNavigateBack()
     }
 
-    // Penting untuk membatalkan scope saat komponen dihancurkan
-    // untuk menghindari memory leak
+    override fun onErrorDismissed() {
+        _state.update { it.copy(error = null) }
+    }
+
+    private fun startResendCooldown() {
+        componentScope.launch {
+            var countdown = 60 // 60 second cooldown
+            while (countdown > 0) {
+                _state.update { it.copy(resendCooldown = countdown) }
+                delay(1000)
+                countdown--
+            }
+            _state.update { 
+                it.copy(
+                    isResendEnabled = true,
+                    resendCooldown = 0
+                )
+            }
+        }
+    }
+
     init {
         lifecycle.doOnDestroy {
-            componentScope.cancel() // Batalkan semua coroutine yang berjalan
-            println("VerificationCodeComponent destroyed, scope cancelled.")
+            componentScope.cancel()
+            resendJob?.cancel()
         }
     }
 }
