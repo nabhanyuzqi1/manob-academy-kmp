@@ -8,7 +8,7 @@ import com.mnb.manobacademy.models.BookingItem
 import com.mnb.manobacademy.models.BottomNavItem
 import com.mnb.manobacademy.models.getDummyBookingItems
 import java.text.NumberFormat
-import java.util.Locale // Pastikan ini tersedia di commonMain atau gunakan KMP alternative
+import java.util.Locale
 
 interface BookingComponent {
     val state: Value<State>
@@ -23,7 +23,9 @@ interface BookingComponent {
         val bookingItems: List<BookingItem> = emptyList(),
         val subtotal: Double = 0.0,
         val currentStep: Int = 0, // 0: Checkout, 1: Payment, 2: Done
-        val currentBottomNavRoute: String = BottomNavItem.Checkout.route,
+        // --- PERBAIKAN DI SINI ---
+        // Ganti Checkout menjadi BookingFlow sesuai definisi di Models.kt
+        val currentBottomNavRoute: String = BottomNavItem.BookingFlow.route,
         val isFavorite: Boolean = false // Contoh state untuk tombol favorit
     )
 }
@@ -48,7 +50,6 @@ class DefaultBookingComponent(
 
     override fun onFavoriteClicked() {
         _state.update { it.copy(isFavorite = !it.isFavorite) }
-        // Tambahkan logika penyimpanan favorit jika ada
         println("Favorite button clicked, new state: ${_state.value.isFavorite}")
     }
 
@@ -75,28 +76,21 @@ class DefaultBookingComponent(
         val selectedItems = _state.value.bookingItems.filter { it.isSelected }
         if (selectedItems.isNotEmpty()) {
             println("Checkout clicked, Subtotal: ${formatPrice(_state.value.subtotal)}, Items: ${selectedItems.joinToString { it.title }}")
-            // _state.update { it.copy(currentStep = 1) } // Pindah ke step Payment jika dihandle di screen yang sama
-            onNavigateToPayment(selectedItems) // Navigasi ke layar pembayaran
+            onNavigateToPayment(selectedItems)
         } else {
-            // Idealnya, tampilkan Snackbar atau pesan di UI
             println("No items selected for checkout.")
         }
     }
 
     override fun onBottomNavItemSelected(newRoute: String) {
-        if (newRoute == _state.value.currentBottomNavRoute) return // Tidak ada perubahan
+        if (newRoute == _state.value.currentBottomNavRoute) return
 
-        // Jika BookingScreen adalah bagian dari tumpukan navigasi yang berbeda untuk setiap tab,
-        // maka onNavigateToDifferentTab akan mengganti seluruh tumpukan.
-        // Jika tidak, ini mungkin hanya mengupdate state untuk menandai tab aktif.
         _state.update { it.copy(currentBottomNavRoute = newRoute) }
         onNavigateToDifferentTab(newRoute)
     }
 
     companion object {
         fun formatPrice(price: Double): String {
-            // Pertimbangkan menggunakan expect/actual untuk NumberFormat jika Locale tidak common
-            // Untuk sementara, kita gunakan Locale.US sebagai fallback jika Locale("in", "ID") tidak ada
             val locale = try {
                 Locale("in", "ID")
             } catch (e: Exception) {

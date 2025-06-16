@@ -1,5 +1,6 @@
 package com.mnb.manobacademy // Sesuaikan package
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.util.Log
 import android.os.Bundle
@@ -16,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import com.arkivanov.decompose.defaultComponentContext // <<< Pastikan ini diimpor
+import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
@@ -32,8 +33,8 @@ import com.mnb.manobacademy.models.dummyNewsItems
 import com.mnb.manobacademy.models.getDummyBookingItems
 import com.mnb.manobacademy.models.getDummyPaymentMethods
 // Import UI Screens
-import com.mnb.manobacademy.views.auth.ui.ForgotPasswordScreen // Import ForgotPasswordScreen
-import com.mnb.manobacademy.views.auth.ui.GuideScreen // <<< IMPORT GuideScreen >>>
+import com.mnb.manobacademy.views.auth.ui.ForgotPasswordScreen
+import com.mnb.manobacademy.views.auth.ui.GuideScreen
 import com.mnb.manobacademy.views.auth.ui.LoginScreen
 import com.mnb.manobacademy.views.auth.ui.RegistrationScreen
 import com.mnb.manobacademy.views.auth.ui.SplashScreen
@@ -43,11 +44,14 @@ import com.mnb.manobacademy.views.auth.component.ForgotPasswordComponent
 import com.mnb.manobacademy.views.auth.component.LoginComponent
 import com.mnb.manobacademy.views.auth.component.ResetMethod
 
-import com.mnb.manobacademy.navigation.RootComponent.DefaultRootComponent
+// --- PERBAIKAN IMPORT ---
+import com.mnb.manobacademy.navigation.DefaultRootComponent
+
 import com.mnb.manobacademy.ui.theme.AppDimens
-// import com.mnb.manobacademy.navigation.RootContent // Tidak perlu diimport jika hanya memanggil App()
 // Import Tema
-import com.mnb.manobacademy.ui.theme.AppTheme // <- Import AppTheme Anda
+import com.mnb.manobacademy.ui.theme.AppTheme
+import com.mnb.manobacademy.views.auth.component.VerificationCodeComponent
+import com.mnb.manobacademy.models.VerificationState
 import com.mnb.manobacademy.views.home.component.HomeComponent
 import com.mnb.manobacademy.views.booking.component.BookingComponent
 import com.mnb.manobacademy.views.booking.ui.BookingListItem
@@ -71,7 +75,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
-            // Tambahkan kode berikut untuk mengatur durasi splash screen
             setKeepOnScreenCondition { true }
             lifecycleScope.launch {
                 delay(2000)
@@ -80,27 +83,19 @@ class MainActivity : ComponentActivity() {
             super.onCreate(savedInstanceState)
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
-                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT) // light causes internally enforce the navigation bar to be fully transparent
+                navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
             )
         }
-        // Gunakan defaultComponentContext() dari Decompose untuk membuat ComponentContext dasar
-        // Pastikan constructor DefaultRootComponent menerima ComponentContext
-        val root = DefaultRootComponent(defaultComponentContext()) // <<< Panggil defaultComponentContext()
 
-        WindowCompat.setDecorFitsSystemWindows(window, false) // <<< Add this line
+        val root = DefaultRootComponent(defaultComponentContext())
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         try {
             setContent {
                 App(root = root)
             }
         } catch (e: Throwable) {
-            // Tangani semua jenis pengecualian yang mungkin terjadi
             Log.e("MainActivity", "Fatal exception in setContent", e)
-            // Tampilkan pesan error ke user atau lakukan fallback lain
-            // Contoh:
-            // Toast.makeText(this, "A fatal error occurred", Toast.LENGTH_LONG).show()
-            // atau
-            // showDialog("A fatal error occurred", "Please restart the app or contact support.")
-            // Akhirnya, exit() aplikasinya
             finish()
         }
     }
@@ -113,27 +108,23 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppAndroidPreview() {
     AppTheme {
-        LoginScreenPreview() // Tampilkan salah satu layar sebagai contoh
+        LoginScreenPreview()
     }
 }
 
-// --- Preview untuk LoginScreen yang Diperbaiki ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     AppTheme {
-        // Buat dummy LoginComponent untuk preview
         val dummyLoginComponent = object : LoginComponent {
             override val state: Value<LoginComponent.State> =
-                MutableValue(LoginComponent.State()) // State awal default
-
+                MutableValue(LoginComponent.State())
             override fun onEmailChanged(text: String) {}
             override fun onPasswordChanged(text: String) {}
             override fun onLoginClicked() {}
             override fun onRegisterClicked() {}
             override fun onForgotPasswordClicked() {}
         }
-        // Panggil LoginScreen dengan dummy component
         LoginScreen(component = dummyLoginComponent)
     }
 }
@@ -159,15 +150,30 @@ fun SplashScreenPreview() {
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+// --- PERBAIKAN PREVIEW DI SINI ---
+@Preview(showSystemUi = true, showBackground = true, name = "Verification Screen")
 @Composable
 fun VerificationCodeScreenPreview() {
     AppTheme {
-        VerificationCodeScreen (
-            onNavigateBack = {},
-            onVerifyClick = {},
-            onResendClick = {},
-            emailAddress = "preview@example.com"
+        val dummyComponent = object : VerificationCodeComponent {
+            override val state: Value<VerificationState> =
+                MutableValue(
+                    VerificationState(
+                        isLoading = false,
+                        error = null,
+                        isResendEnabled = true,
+                        resendCooldown = 0
+                    )
+                )
+            override val emailAddress: String? = "preview@example.com"
+            override fun onVerifyClicked(code: String) {}
+            override fun onResendClicked() {}
+            override fun onBackClicked() {}
+            override fun onErrorDismissed() {}
+        }
+        // Panggilan menjadi sangat sederhana
+        VerificationCodeScreen(
+            component = dummyComponent
         )
     }
 }
@@ -192,25 +198,20 @@ fun ForgotPasswordScreenPreview() {
     }
 }
 
-// --- Preview untuk GuideScreen ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun GuideScreenPreview() { // <<< Nama fungsi preview baru
-    AppTheme { // <<< Bungkus dengan AppTheme
+fun GuideScreenPreview() {
+    AppTheme {
         GuideScreen(
-            onGetStarted = {} // <<< Berikan lambda kosong
+            onGetStarted = {}
         )
     }
 }
-
-// --- Preview untuk HomeScreen ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    AppTheme { // Ensure AppTheme provides MaterialTheme and Dimens
-        // Buat dummy HomeComponent
+    AppTheme {
         val dummyHomeComponent = object : HomeComponent {
-            // Sediakan state default untuk preview
             override val state: Value<HomeComponent.State> =
                 MutableValue(HomeComponent.State(
                     userName = "Nama Pengguna Preview",
@@ -220,7 +221,7 @@ fun HomeScreenPreview() {
                         Category(Res.string.home_category_photography, Icons.Default.PhotoCamera),
                         Category(Res.string.home_category_design, Icons.Default.Draw)
                     ),
-                    selectedCategory = Category(Res.string.home_category_art, Icons.Default.Palette), // Example selected
+                    selectedCategory = Category(Res.string.home_category_art, Icons.Default.Palette),
                     courses = listOf(
                         Course("c_prev1", "Judul Kelas Preview 1", "Kategori A", 4.2f, "Rp 100.000", "Rp 50.000", ""),
                         Course("c_prev2", "Judul Kelas Preview 2", "Kategori B", 4.9f, "Rp 150.000", "Rp 75.000", "")
@@ -229,30 +230,26 @@ fun HomeScreenPreview() {
                         Instructor("i_prev1", "Instruktur Satu Preview", ""),
                         Instructor("i_prev2", "Instruktur Dua Preview", "")
                     ),
-                    newsItems = dummyNewsItems, // Added dummy news items for preview
+                    newsItems = dummyNewsItems,
                     currentBottomNavRoute = BottomNavItem.Home.route
                 ))
 
-            // Implementasi fungsi kosong untuk preview
-            override fun onSearchQueryChanged(query: String) { println("Preview: Search changed to $query") }
-            override fun onCategorySelected(category: Category) { println("Preview: Category selected: ${category.nameRes}") }
-            override fun onCourseClicked(courseId: String) { println("Preview: Course clicked: $courseId") }
-            override fun onInstructorClicked(instructorId: String) { println("Preview: Instructor clicked: $instructorId") }
-            override fun onBottomNavItemSelected(route: String) { println("Preview: Nav item selected: $route") }
-            override fun onLogoutClicked() { println("Preview: Logout clicked") }
-            // Added missing methods for preview
-            override fun onNotificationClicked() { println("Preview: Notification clicked") }
-            override fun onViewAllClassesClicked() { println("Preview: View All Classes clicked") }
-            override fun onViewAllInstructorsClicked() { println("Preview: View All Instructors clicked") }
-            override fun onViewAllNewsClicked() { println("Preview: View All News clicked") }
-            override fun onNewsItemClicked(newsId: String) { println("Preview: News item clicked: $newsId") }
+            override fun onSearchQueryChanged(query: String) {}
+            override fun onCategorySelected(category: Category) {}
+            override fun onCourseClicked(courseId: String) {}
+            override fun onInstructorClicked(instructorId: String) {}
+            override fun onBottomNavItemSelected(route: String) {}
+            override fun onLogoutClicked() {}
+            override fun onNotificationClicked() {}
+            override fun onViewAllClassesClicked() {}
+            override fun onViewAllInstructorsClicked() {}
+            override fun onViewAllNewsClicked() {}
+            override fun onNewsItemClicked(newsId: String) {}
         }
-        // Panggil HomeScreen dengan dummy component
         HomeScreen(component = dummyHomeComponent)
     }
 }
 
-// --- Preview untuk ProfileScreen ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
@@ -261,7 +258,6 @@ fun ProfileScreenPreview() {
     }
 }
 
-// --- Preview untuk EditProfileScreen ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun EditProfileScreenPreview() {
@@ -270,7 +266,6 @@ fun EditProfileScreenPreview() {
     }
 }
 
-// --- Preview untuk SettingScreen ---
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun SettingScreenPreview() {
@@ -281,55 +276,28 @@ fun SettingScreenPreview() {
     }
 }
 
-// --- Preview Booking Component (Stub Implementation) ---
 class PreviewBookingComponent : BookingComponent {
     override val state: Value<BookingComponent.State> =
         MutableValue(
             BookingComponent.State(
-                bookingItems = getDummyBookingItems(), // Gunakan dummy data
+                bookingItems = getDummyBookingItems(),
                 subtotal = getDummyBookingItems().filter { it.isSelected }.sumOf { it.price },
-                currentStep = 0, // Mulai dari step Checkout
-                isFavorite = false // Contoh state favorit
+                currentStep = 0,
+                isFavorite = false
             )
         )
-
-    override fun onBackClicked() {
-        println("Preview: Back clicked")
-    }
-
-    override fun onFavoriteClicked() {
-        println("Preview: Favorite clicked")
-        // Untuk interaktivitas di preview, Anda bisa update state di sini jika MutableValue dipegang oleh kelas ini
-        // (state as? MutableValue)?.update { it.copy(isFavorite = !it.isFavorite) }
-    }
-
-    override fun onItemCheckedChanged(itemId: String, isChecked: Boolean) {
-        println("Preview: Item $itemId changed to $isChecked")
-        // (state as? MutableValue)?.update { currentState ->
-        //     val updatedItems = currentState.bookingItems.map { item ->
-        //         if (item.id == itemId) item.copy(isSelected = isChecked) else item
-        //     }
-        //     val newSubtotal = updatedItems.filter { it.isSelected }.sumOf { it.price }
-        //     currentState.copy(bookingItems = updatedItems, subtotal = newSubtotal)
-        // }
-    }
-
-    override fun onCheckoutClicked() {
-        println("Preview: Checkout clicked")
-    }
-
-    override fun onBottomNavItemSelected(newRoute: String) {
-        println("Preview: Bottom nav item selected: $newRoute")
-        // (state as? MutableValue)?.update { it.copy(currentBottomNavRoute = newRoute) }
-    }
+    override fun onBackClicked() {}
+    override fun onFavoriteClicked() {}
+    override fun onItemCheckedChanged(itemId: String, isChecked: Boolean) {}
+    override fun onCheckoutClicked() {}
+    override fun onBottomNavItemSelected(newRoute: String) {}
 }
 
-// --- Preview untuk BookingScreen ---
 @Preview(showSystemUi = true, showBackground = true, name = "Booking Screen Light")
-@Preview(showSystemUi = true, showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Booking Screen Dark")
+@Preview(showSystemUi = true, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Booking Screen Dark")
 @Composable
 fun BookingScreenPreview() {
-    AppTheme { // Pastikan AppTheme Anda mengatur LocalDimens dan LocalColorScheme
+    AppTheme {
         BookingScreen(
             component = PreviewBookingComponent()
         )
@@ -343,7 +311,7 @@ fun BookingListItemSelectedPreview() {
         BookingListItem(
             item = BookingItem("prev1", null, "Fotografi Advanced", "Selasa, 21 April 2025", 150000.0, "Rp.150.000", true),
             onCheckedChanged = {},
-            dimens = AppDimens // Atau dimens spesifik jika perlu diisolasi
+            dimens = AppDimens
         )
     }
 }
@@ -365,7 +333,6 @@ class PreviewCheckoutComponent : CheckoutComponent {
         MutableValue(
             CheckoutComponent.State(
                 itemsToCheckout = getDummyBookingItems().take(2).map {
-                    // Modifikasi dummy data jika perlu, misal tanggal akhir
                     it.copy(schedule = "01.08.2025")
                 },
                 totalAmount = getDummyBookingItems().take(2).sumOf { it.price }
@@ -376,7 +343,7 @@ class PreviewCheckoutComponent : CheckoutComponent {
 }
 
 @Preview(showBackground = true, showSystemUi = true, name = "Checkout Screen Light")
-@Preview(showBackground = true, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Checkout Screen Dark")
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Checkout Screen Dark")
 @Composable
 fun CheckoutScreenPreview() {
     AppTheme {
@@ -390,12 +357,11 @@ class PreviewPaymentComponent : PaymentComponent {
             itemsToPay = getDummyBookingItems().take(1),
             totalAmount = getDummyBookingItems().first().price,
             paymentMethods = getDummyPaymentMethods(),
-            selectedPaymentMethodId = getDummyPaymentMethods().first { it.category == PaymentCategory.E_MONEY }.id, // Pilih OVO sebagai default
+            selectedPaymentMethodId = getDummyPaymentMethods().first { it.category == PaymentCategory.E_MONEY }.id,
             currentStep = 1
         )
     )
     override val state: Value<PaymentComponent.State> = _state
-
     override fun onBackClicked() {}
     override fun onPaymentMethodSelected(methodId: String) {
         _state.update { currentState ->
@@ -412,7 +378,7 @@ class PreviewPaymentComponent : PaymentComponent {
 }
 
 @Preview(showBackground = true, showSystemUi = true, name = "Payment Screen Light")
-@Preview(showBackground = true, showSystemUi = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Payment Screen Dark")
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Payment Screen Dark")
 @Composable
 fun PaymentScreenPreview() {
     AppTheme {

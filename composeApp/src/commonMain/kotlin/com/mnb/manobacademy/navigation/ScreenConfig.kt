@@ -1,37 +1,36 @@
 package com.mnb.manobacademy.navigation
 
-import com.arkivanov.essenty.parcelable.Parcelable
-import com.arkivanov.essenty.parcelable.Parcelize
 import com.mnb.manobacademy.models.BookingItem
+import kotlinx.serialization.Serializable
 
 /**
  * Sealed interface yang mendefinisikan semua kemungkinan konfigurasi layar
  * yang dapat dinavigasi dalam aplikasi.
  */
-@Parcelize // Jika semua config adalah Parcelable, ini bisa diletakkan di sini
-sealed interface ScreenConfig : Parcelable { // Implement Parcelable
-    @Parcelize
+@Serializable // Jika semua config adalah Serializable, ini bisa diletakkan di sini
+sealed interface ScreenConfig { // Implement Serializable
+    @Serializable
     data object Splash : ScreenConfig
-    @Parcelize
+    @Serializable
     data object Login : ScreenConfig
-    @Parcelize
+    @Serializable
     data object Register : ScreenConfig
-    @Parcelize
+    @Serializable
     data object ForgotPassword : ScreenConfig
-    @Parcelize
+    @Serializable
     data class VerificationCode(val email: String?) : ScreenConfig
-    @Parcelize
+    @Serializable
     data object Home : ScreenConfig
-    @Parcelize
+    @Serializable
     data object Guide : ScreenConfig
 
     // --- Konfigurasi untuk Alur Checkout ---
-    @Parcelize
+    @Serializable
     data object Booking : ScreenConfig // Layar awal pemilihan item booking
 
-    @Parcelize
+    @Serializable
     data class Checkout(val items: List<BookingItem>) : ScreenConfig // Layar ringkasan checkout
 
-    @Parcelize
+    @Serializable
     data class Payment(val items: List<BookingItem>, val totalAmount: Double) : ScreenConfig // Layar pemilihan metode pembayaran
 }

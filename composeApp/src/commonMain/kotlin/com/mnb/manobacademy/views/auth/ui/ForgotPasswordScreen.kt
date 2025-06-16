@@ -86,8 +86,9 @@ fun ForgotPasswordScreen(component: ForgotPasswordComponent) {
                 PrimaryActionButton(
                     text = stringResource(Res.string.forgot_password_reset_button),
                     onClick = component::onResetClicked,
-                    enabled = state.isResetEnabled && !state.isLoading, // Aktif jika metode dipilih & tidak loading
-                    modifier = Modifier.fillMaxWidth() // Tombol mengisi lebar
+                    modifier = Modifier.fillMaxWidth(), // Aktif jika metode dipilih & tidak loading
+                    enabled = state.isResetEnabled && !state.isLoading,
+                    loading = state.isLoading // Tombol mengisi lebar
                 )
                 // Tampilkan indikator loading jika perlu
                 if (state.isLoading) {

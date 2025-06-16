@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.mnb.manobacademy.ui.theme.dimens
 
 /**
@@ -30,7 +29,8 @@ fun PrimaryActionButton(
         .fillMaxWidth()
         .height(MaterialTheme.dimens.buttonHeight), // Ukuran default tombol
     enabled: Boolean = true,
-    shape: RoundedCornerShape = RoundedCornerShape(MaterialTheme.dimens.primaryButtonCornerRadius) // Bentuk default tombol
+    shape: RoundedCornerShape = RoundedCornerShape(MaterialTheme.dimens.primaryButtonCornerRadius), // Bentuk default tombol
+    loading: Boolean
 ) {
     Button(
         onClick = onClick,

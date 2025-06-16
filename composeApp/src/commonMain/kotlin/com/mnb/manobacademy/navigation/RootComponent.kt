@@ -13,22 +13,28 @@ import com.mnb.manobacademy.core.data.repository.AuthRepository
 import com.mnb.manobacademy.core.data.repository.SupabaseAuthRepository
 import com.mnb.manobacademy.core.utils.isDevelopmentMode
 import com.mnb.manobacademy.models.BookingItem
-import com.mnb.manobacademy.models.BottomNavItem // Import BottomNavItem
-import com.mnb.manobacademy.views.auth.component.DefaultForgotPasswordComponent
-import com.mnb.manobacademy.views.auth.component.DefaultLoginComponent
-import com.mnb.manobacademy.views.auth.component.DefaultVerificationCodeComponent
-import com.mnb.manobacademy.views.auth.component.ForgotPasswordComponent
-import com.mnb.manobacademy.views.auth.component.LoginComponent
-import com.mnb.manobacademy.views.auth.component.VerificationCodeComponent
-import com.mnb.manobacademy.views.booking.component.BookingComponent // Import BookingComponent
-import com.mnb.manobacademy.views.booking.component.DefaultBookingComponent // Import DefaultBookingComponent
-import com.mnb.manobacademy.views.checkout.component.CheckoutComponent // Import CheckoutComponent
-import com.mnb.manobacademy.views.checkout.component.DefaultCheckoutComponent // Import DefaultCheckoutComponent
+import com.mnb.manobacademy.models.BottomNavItem
+import com.mnb.manobacademy.views.auth.component.*
+import com.mnb.manobacademy.views.booking.component.BookingComponent
+import com.mnb.manobacademy.views.booking.component.DefaultBookingComponent
+import com.mnb.manobacademy.views.checkout.component.CheckoutComponent
+import com.mnb.manobacademy.views.checkout.component.DefaultCheckoutComponent
 import com.mnb.manobacademy.views.home.component.DefaultHomeComponent
 import com.mnb.manobacademy.views.home.component.HomeComponent
-import com.mnb.manobacademy.views.payment.component.DefaultPaymentComponent // Import DefaultPaymentComponent
-import com.mnb.manobacademy.views.payment.component.PaymentComponent // Import PaymentComponent
-import kotlinx.serialization.builtins.serializer
+import com.mnb.manobacademy.views.payment.component.DefaultPaymentComponent
+import com.mnb.manobacademy.views.payment.component.PaymentComponent
+
+// Implementasi Dummy Repository (bisa dipindah ke file lain)
+class SupabaseVerificationRepository : VerificationRepository {
+    override suspend fun verifyCode(email: String, code: String): VerificationResult {
+        return if (code == "123456") VerificationResult.Success else VerificationResult.Invalid
+    }
+
+    override suspend fun resendCode(email: String): ResendResult {
+        return ResendResult.Success
+    }
+}
+
 
 // Interface Root Component
 interface RootComponent {
@@ -43,9 +49,9 @@ interface RootComponent {
         data class ForgotPassword(val component: ForgotPasswordComponent) : Child
         data object Guide : Child
         data class Home(val component: HomeComponent) : Child
-        data class Booking(val component: BookingComponent) : Child // Tambahkan Booking
-        data class Checkout(val component: CheckoutComponent) : Child // Sudah ada, pastikan benar
-        data class Payment(val component: PaymentComponent) : Child   // Sudah ada, pastikan benar
+        data class Booking(val component: BookingComponent) : Child
+        data class Checkout(val component: CheckoutComponent) : Child
+        data class Payment(val component: PaymentComponent) : Child
     }
 }
 
@@ -55,12 +61,14 @@ class DefaultRootComponent(
 ) : RootComponent, ComponentContext by componentContext {
 
     private val authRepository: AuthRepository = SupabaseAuthRepository()
+    private val verificationRepository: VerificationRepository = SupabaseVerificationRepository()
+
     override val navigation = StackNavigation<ScreenConfig>()
 
     override val stack: Value<ChildStack<*, RootComponent.Child>> =
         childStack(
             source = navigation,
-            serializer = ScreenConfig.serializer(), // Gunakan serializer jika ScreenConfig @Serializable
+            serializer = null,
             initialConfiguration = determineInitialScreenBasedOnMode(),
             handleBackButton = true,
             childFactory = ::createChild
@@ -95,7 +103,8 @@ class DefaultRootComponent(
                     componentContext = context,
                     email = config.email,
                     onVerified = { navigation.replaceAll(ScreenConfig.Home) },
-                    onNavigateBack = { navigation.pop() }
+                    onNavigateBack = { navigation.pop() },
+                    verificationRepository = verificationRepository
                 )
             )
             is ScreenConfig.ForgotPassword -> RootComponent.Child.ForgotPassword(
@@ -119,24 +128,15 @@ class DefaultRootComponent(
                     onNavigateToAllClasses = { println("Navigasi ke Semua Kelas") },
                     onNavigateToAllInstructors = { println("Navigasi ke Semua Instruktur") },
                     onNavigateToAllNews = { println("Navigasi ke Semua Berita") },
-                    onNavigateToNewsDetail = { newsId -> println("Navigasi ke Detail Berita: $newsId") },
-                    // Tambahkan navigasi untuk Bottom Nav dari Home
-                    onBottomNavItemSelected = { route ->
-                        when (route) {
-                            BottomNavItem.Home.route -> navigation.replaceAll(ScreenConfig.Home)
-                            BottomNavItem.BookingFlow.route -> navigation.replaceAll(ScreenConfig.Booking) // Arahkan ke BookingScreen
-                            // Tambahkan case lain untuk bottom nav jika perlu
-                            else -> println("Bottom nav to $route not handled from Home")
-                        }
-                    }
+                    onNavigateToNewsDetail = { newsId -> println("Navigasi ke Detail Berita: $newsId") }
+                    // --- PERBAIKAN DI SINI ---
+                    // Parameter 'onBottomNavItemSelected' dihapus karena sudah tidak ada di konstruktor DefaultHomeComponent
                 )
             )
-            // --- Implementasi untuk Alur Checkout ---
             is ScreenConfig.Booking -> RootComponent.Child.Booking(
                 DefaultBookingComponent(
                     componentContext = context,
                     onNavigateBack = {
-                        // Kembali ke Home atau layar sebelumnya tergantung dari mana Booking diakses
                         if (stack.value.items.size > 1 && stack.value.items[stack.value.items.size - 2].configuration is ScreenConfig.Home) {
                             navigation.pop()
                         } else {
@@ -146,11 +146,10 @@ class DefaultRootComponent(
                     onNavigateToPayment = { itemsToCheckout ->
                         navigation.push(ScreenConfig.Checkout(itemsToCheckout))
                     },
-                    onNavigateToDifferentTab = { newRoute -> // Handle navigasi bottom bar dari BookingScreen
+                    onNavigateToDifferentTab = { newRoute ->
                         when (newRoute) {
                             BottomNavItem.Home.route -> navigation.replaceAll(ScreenConfig.Home)
-                            BottomNavItem.BookingFlow.route -> { /* Sudah di booking flow, tidak perlu navigasi */ }
-                            // Tambahkan case lain
+                            BottomNavItem.BookingFlow.route -> { /* Do nothing */ }
                             else -> println("Bottom nav to $newRoute not handled from Booking")
                         }
                     }
@@ -174,7 +173,7 @@ class DefaultRootComponent(
                     onNavigateBack = { navigation.pop() },
                     onPaymentSuccess = {
                         println("Pembayaran Berhasil! Kembali ke Home.")
-                        navigation.replaceAll(ScreenConfig.Home) // Atau ke layar sukses pesanan
+                        navigation.replaceAll(ScreenConfig.Home)
                     }
                 )
             )

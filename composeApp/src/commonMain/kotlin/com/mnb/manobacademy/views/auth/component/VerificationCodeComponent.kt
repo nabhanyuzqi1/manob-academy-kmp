@@ -1,56 +1,59 @@
-package com.mnb.manobacademy.views.auth.component // Sesuaikan package jika perlu
+package com.mnb.manobacademy.views.auth.component
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnDestroy
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.mnb.manobacademy.models.VerificationState
+import kotlinx.coroutines.*
+
+// --- Definisi State dan Result yang Diperlukan ---
+// HAPUS 'data class VerificationState' DARI SINI
+
+/**
+ * Hasil dari operasi verifikasi kode.
+ */
+sealed class VerificationResult {
+    data object Success : VerificationResult()
+    data object Invalid : VerificationResult()
+    data class Error(val message: String) : VerificationResult()
+}
+
+/**
+ * Hasil dari operasi kirim ulang kode.
+ */
+sealed class ResendResult {
+    data object Success : ResendResult()
+    data class Error(val message: String) : ResendResult()
+}
+
+/**
+ * Dummy repository untuk tujuan kompilasi. Ganti dengan implementasi nyata Anda.
+ */
+interface VerificationRepository {
+    suspend fun verifyCode(email: String, code: String): VerificationResult
+    suspend fun resendCode(email: String): ResendResult
+}
+
+
+// --- Interface dan Implementasi Komponen ---
 
 /**
  * Interface untuk komponen logika layar verifikasi kode OTP.
  */
 interface VerificationCodeComponent {
-    /**
-     * Current state of the verification UI
-     */
     val state: Value<VerificationState>
-
-    /**
-     * Email address where OTP code was sent
-     */
     val emailAddress: String?
 
-    /**
-     * Called when verify button is clicked
-     */
     fun onVerifyClicked(code: String)
-
-    /**
-     * Called when resend link is clicked
-     */
     fun onResendClicked()
-
-    /**
-     * Called when back button is pressed
-     */
     fun onBackClicked()
-
-    /**
-     * Called to dismiss any error messages
-     */
     fun onErrorDismissed()
 }
 
 /**
  * Implementasi default untuk [VerificationCodeComponent].
- *
- * @param componentContext Konteks Decompose untuk komponen ini.
- * @param email Alamat email yang akan ditampilkan (opsional).
- * @param onVerified Callback yang dipanggil ketika verifikasi OTP berhasil.
- * @param onNavigateBack Callback yang dipanggil untuk menavigasi kembali.
  */
 class DefaultVerificationCodeComponent(
     componentContext: ComponentContext,
@@ -72,13 +75,13 @@ class DefaultVerificationCodeComponent(
 
         _state.update { it.copy(isLoading = true, error = null) }
 
-        componentScope.launch(Dispatchers.Default) {
+        componentScope.launch {
             try {
                 val result = verificationRepository.verifyCode(email ?: "", code)
                 withContext(Dispatchers.Main.immediate) {
                     when (result) {
                         is VerificationResult.Success -> {
-                            _state.update { 
+                            _state.update {
                                 it.copy(
                                     isLoading = false,
                                     verificationSuccess = true,
@@ -88,7 +91,7 @@ class DefaultVerificationCodeComponent(
                             onVerified()
                         }
                         is VerificationResult.Invalid -> {
-                            _state.update { 
+                            _state.update {
                                 it.copy(
                                     isLoading = false,
                                     error = "Invalid verification code"
@@ -96,7 +99,7 @@ class DefaultVerificationCodeComponent(
                             }
                         }
                         is VerificationResult.Error -> {
-                            _state.update { 
+                            _state.update {
                                 it.copy(
                                     isLoading = false,
                                     error = result.message
@@ -107,7 +110,7 @@ class DefaultVerificationCodeComponent(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main.immediate) {
-                    _state.update { 
+                    _state.update {
                         it.copy(
                             isLoading = false,
                             error = e.message ?: "An unexpected error occurred"
@@ -121,26 +124,25 @@ class DefaultVerificationCodeComponent(
     override fun onResendClicked() {
         if (_state.value.isLoading || !_state.value.isResendEnabled) return
 
-        _state.update { it.copy(isLoading = true, error = null) }
+        _state.update { it.copy(isLoading = true, error = null, successMessage = null) }
 
         resendJob?.cancel()
-        resendJob = componentScope.launch(Dispatchers.Default) {
+        resendJob = componentScope.launch {
             try {
                 val result = verificationRepository.resendCode(email ?: "")
                 withContext(Dispatchers.Main.immediate) {
                     when (result) {
                         is ResendResult.Success -> {
-                            _state.update { 
+                            _state.update {
                                 it.copy(
                                     isLoading = false,
-                                    successMessage = "Verification code resent",
-                                    isResendEnabled = false
+                                    successMessage = "Verification code resent"
                                 )
                             }
                             startResendCooldown()
                         }
                         is ResendResult.Error -> {
-                            _state.update { 
+                            _state.update {
                                 it.copy(
                                     isLoading = false,
                                     error = result.message
@@ -151,7 +153,7 @@ class DefaultVerificationCodeComponent(
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main.immediate) {
-                    _state.update { 
+                    _state.update {
                         it.copy(
                             isLoading = false,
                             error = e.message ?: "Failed to resend code"
@@ -172,13 +174,14 @@ class DefaultVerificationCodeComponent(
 
     private fun startResendCooldown() {
         componentScope.launch {
+            _state.update { it.copy(isResendEnabled = false) }
             var countdown = 60 // 60 second cooldown
             while (countdown > 0) {
                 _state.update { it.copy(resendCooldown = countdown) }
                 delay(1000)
                 countdown--
             }
-            _state.update { 
+            _state.update {
                 it.copy(
                     isResendEnabled = true,
                     resendCooldown = 0

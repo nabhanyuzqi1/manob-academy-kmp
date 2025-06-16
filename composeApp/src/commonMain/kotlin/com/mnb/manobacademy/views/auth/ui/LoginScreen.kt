@@ -364,8 +364,9 @@ private fun LoginFormFields(
     PrimaryActionButton(
         text = stringResource(Res.string.login_button_signin),
         onClick = onLoginClick, // Gunakan fungsi dari parameter
-        enabled = !state.isLoading, // Nonaktifkan tombol saat loading
-        modifier = Modifier.fillMaxWidth() // Tombol mengisi lebar penuh
+        modifier = Modifier.fillMaxWidth(), // Nonaktifkan tombol saat loading
+        enabled = !state.isLoading,
+        loading = state.isLoading // Tombol mengisi lebar penuh
     )
 
     Spacer(modifier = Modifier.height(dimens.spacingExtraLarge))
