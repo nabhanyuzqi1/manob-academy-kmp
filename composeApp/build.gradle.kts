@@ -83,7 +83,9 @@ kotlin {
                 implementation(libs.androidx.activity.compose)
                 implementation(libs.androidx.core.splashscreen)
                 implementation(libs.androidx.lifecycle.viewmodel.compose)
-                implementation(libs.androidx.compose.material3.window.size) // Contoh alias
+                implementation(libs.androidx.compose.material3.window.size)
+                implementation(libs.leakcanary.android)
+
             }
         }
         val commonMain by getting {

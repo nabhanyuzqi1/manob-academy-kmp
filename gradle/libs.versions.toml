@@ -22,7 +22,9 @@ uiToolingPreviewAndroid = "1.8.0"
 material3 = "1.3.2"
 uiToolingPreviewDesktop = "1.7.3"
 uiTooling = "1.8.0"
-essenty = "1.3.0" # Atau versi terbaru Essenty yang kompatibel
+essenty = "1.3.0"
+leakcanary = "2.14"
+
 
 [libraries]
 essenty-parcelable = { group = "com.arkivanov.essenty", name = "parcelable", version.ref = "essenty" }
@@ -42,12 +44,10 @@ supabase-auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt", version.
 supabase-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "supabase" }
 supabase-storage-kt = { module = "io.github.jan-tennert.supabase:storage-kt", version.ref = "supabase" }
 supabase-realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt", version.ref = "supabase" }
-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version.ref = "mvikotlin" }
-mvikotlin-extensions-coroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
-ui-tooling-preview-desktop = { module = "org.jetbrains.compose.ui:ui-tooling-preview-desktop", version.ref = "uiToolingPreviewDesktop" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "uiTooling" }
+leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" } # Tambahkan library LeakCanary
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
