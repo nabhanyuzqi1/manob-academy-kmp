@@ -1,7 +1,6 @@
 package com.mnb.manobacademy.core.data.repository
 
 import com.mnb.manobacademy.core.network.supabase.SupabaseManager
-import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
